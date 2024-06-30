@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('code');
             $table->text('title_tour');
             $table->string('meet_place');
-            $table->date('meet_date');
             $table->decimal('price', 15, 2);
             $table->text('img_tour');
             $table->string('note');

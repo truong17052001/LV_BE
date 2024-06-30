@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TourGuider extends Model
+class Place extends Model
 {
-    public $table = 'tour_guider'; 
+    public $table = 'place'; 
     /**
      * The attributes that are mass assignable.
      *
@@ -14,9 +14,7 @@ class TourGuider extends Model
      */
     protected $fillable = [
         'name',
-        'phone',
-        'address',
-        'email',
-        'img',
+        'dec',
+        'state',
     ];
 }

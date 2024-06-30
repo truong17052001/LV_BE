@@ -3,52 +3,40 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Client\TourRepository;
+use App\Repositories\Client\HotelRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class TourController extends Controller
+class HotelController extends Controller
 {
-    private TourRepository $tourRepository;
+    private HotelRepository $hotelRepository;
 
-    public function __construct(TourRepository $tourRepo)
+    public function __construct(HotelRepository $hotelRepo)
     {
-        $this->tourRepository = $tourRepo;
+        $this->hotelRepository = $hotelRepo;
     }
 
     public function index(Request $request)
     {
-        $params = [
-            'page' => (int) $request->get('page', 1),
-            'limit' => (int) $request->get('limit', 100),
-        ];
-
         $search = [];
 
-        $tours = $this->tourRepository->getList(
+        $hotels = $this->hotelRepository->getAll(
             $search,
-            $params['page'],
-            $params['limit'],
+
         );
-        $params['total_page'] = $tours->total() ? $tours->lastPage() : 0;
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tours->items(),
-            'paginate' => $params
+            'data' => $hotels,
         ]);
     }
 
     public function detail($id)
     {
-        $tour = $this->tourRepository->getDetail($id);
-
-        if (empty($tour)) {
-            // return $this->sendError('Tour not found');
-        }
+        $hotel = $this->hotelRepository->find($id);
 
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tour,
+            'data' => $hotel,
         ]);
     }
 
@@ -66,15 +54,15 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'website' => $request->website,
+            'standard' => $request->standard,
         ];
 
-        $this->tourRepository->create(
+        $this->hotelRepository->create(
             $input
         );
 
@@ -97,15 +85,15 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'website' => $request->website,
+            'standard' => $request->standard,
         ];
 
-        $this->tourRepository->update(
+        $this->hotelRepository->update(
             $id,
             $input
         );
@@ -116,7 +104,7 @@ class TourController extends Controller
     }
     public function delete($id)
     {
-        $this->tourRepository->delete(
+        $this->hotelRepository->delete(
             $id,
         );
 

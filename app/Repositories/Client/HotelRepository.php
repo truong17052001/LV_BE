@@ -1,25 +1,29 @@
 <?php
 namespace App\Repositories\Client;
 
-use App\Models\TourGuider;
+use App\Models\Hotel;
 use App\Repositories\Base;
 
-class TourGuiderRepository extends Base{
-    
+class HotelRepository extends Base
+{
+
     protected $fieldSearchable = [
         'name',
         'phone',
         'address',
         'email',
-        'img',
+        'website',
+        'standard',
     ];
 
-    public function getFieldSearchable(): array {
+    public function getFieldSearchable(): array
+    {
         return $this->fieldSearchable;
 
     }
 
-    public function model(): string {
-        return TourGuider::class;
+    public function model(): string
+    {
+        return Hotel::class;
     }
 }

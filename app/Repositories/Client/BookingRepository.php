@@ -1,18 +1,23 @@
 <?php
 namespace App\Repositories\Client;
 
-use App\Models\Tour;
+use App\Models\Booking;
 use App\Repositories\Base;
 
-class TourRepository extends Base
+class BookingRepository extends Base
 {
     protected $fieldSearchable = [
-        'code',
-        'title_tour',
-        'meet_place',
-        'price',
-        'img_tour',
-        'note',
+        'id_booking',
+        'time_booking',
+        'status',
+        'name',
+        'phone',
+        'email',
+        'address',
+        'total_price',
+        'id_date',
+        'id_customer',
+        'id_discount',
     ];
 
     public function getFieldSearchable(): array
@@ -22,7 +27,7 @@ class TourRepository extends Base
 
     public function model(): string
     {
-        return Tour::class;
+        return Booking::class;
     }
 
     public function getList(array $search = [], int $page = null, int $limit = null, array $columns = ['*'])

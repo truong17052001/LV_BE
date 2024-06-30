@@ -72,7 +72,6 @@ class SaveJsonToDatabase extends Command
                 'code' => $item['tourCode'],
                 'title_tour' => $item['destination'],
                 'meet_place' => $item['departureName'],
-                'meet_date' => $item['departureDate'],
                 'price' => $item['adultPrice'],
                 'img_tour' => $item['imageUrl'],
                 'note' => $item['tourLineTitle'],
@@ -88,7 +87,10 @@ class SaveJsonToDatabase extends Command
                 }
 
                 foreach ($data['listTourProgram'] as $index => $tourProgram) {
-                    $this->activityRepository->create([
+                    $this->activityRepository->upsert([
+                        'id_tour' => $tour->id,
+                        'title' => $tourProgram['title'],
+                    ],[
                         'id_tour' => $tour->id,
                         'day' => $tourProgram['day'],
                         'date' => $tourProgram['date'],
@@ -101,11 +103,13 @@ class SaveJsonToDatabase extends Command
                     $this->tourGuiderRepository->upsert([
                         'name' => $data['tourGuide']['fullName'],
                         'phone' => $data['tourGuide']['phone'],
+                        'address' => 'HCM',
                         'email' => null,
                         'img' => null
                     ], [
                         'name' => $data['tourGuide']['fullName'],
                         'phone' => $data['tourGuide']['phone'],
+                        'address' => 'HCM',
                         'email' => null,
                         'img' => null
                     ]);

@@ -3,52 +3,40 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Client\TourRepository;
+use App\Repositories\Client\VehicleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class TourController extends Controller
+class VehicleController extends Controller
 {
-    private TourRepository $tourRepository;
+    private VehicleRepository $vehicleRepository;
 
-    public function __construct(TourRepository $tourRepo)
+    public function __construct(VehicleRepository $vehicleRepo)
     {
-        $this->tourRepository = $tourRepo;
+        $this->vehicleRepository = $vehicleRepo;
     }
 
     public function index(Request $request)
     {
-        $params = [
-            'page' => (int) $request->get('page', 1),
-            'limit' => (int) $request->get('limit', 100),
-        ];
-
         $search = [];
 
-        $tours = $this->tourRepository->getList(
+        $vehicles = $this->vehicleRepository->getAll(
             $search,
-            $params['page'],
-            $params['limit'],
+
         );
-        $params['total_page'] = $tours->total() ? $tours->lastPage() : 0;
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tours->items(),
-            'paginate' => $params
+            'data' => $vehicles,
         ]);
     }
 
     public function detail($id)
     {
-        $tour = $this->tourRepository->getDetail($id);
-
-        if (empty($tour)) {
-            // return $this->sendError('Tour not found');
-        }
+        $vehicle = $this->vehicleRepository->find($id);
 
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tour,
+            'data' => $vehicle,
         ]);
     }
 
@@ -66,15 +54,11 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'capacity' => $request->capacity,
         ];
 
-        $this->tourRepository->create(
+        $this->vehicleRepository->create(
             $input
         );
 
@@ -97,15 +81,11 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'capacity' => $request->capacity,
         ];
 
-        $this->tourRepository->update(
+        $this->vehicleRepository->update(
             $id,
             $input
         );
@@ -116,7 +96,7 @@ class TourController extends Controller
     }
     public function delete($id)
     {
-        $this->tourRepository->delete(
+        $this->vehicleRepository->delete(
             $id,
         );
 

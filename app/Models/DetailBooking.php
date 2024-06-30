@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class TourGuider extends Model
+class DetailBooking extends Model
 {
-    public $table = 'tour_guider'; 
+    public $table = 'detail_booking'; 
     /**
      * The attributes that are mass assignable.
      *
@@ -14,9 +15,9 @@ class TourGuider extends Model
      */
     protected $fillable = [
         'name',
-        'phone',
-        'address',
-        'email',
-        'img',
+        'gender',
+        'birthday',
+        'type',
+        'id_booking',
     ];
 }

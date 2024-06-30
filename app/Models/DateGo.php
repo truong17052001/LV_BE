@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DateGo extends Model
 {
@@ -19,4 +20,13 @@ class DateGo extends Model
         'id_tour',
         'id_guider',
     ];
+
+    // public function tour(): BelongsTo
+    // {
+    //     return $this->belongTo(Tour::class);
+    // }
+    // public function guider(): BelongsTo
+    // {
+    //     return $this->belongTo(TourGuider::class);
+    // }
 }

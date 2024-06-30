@@ -3,55 +3,41 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Client\TourRepository;
+use App\Repositories\Client\TourGuiderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class TourController extends Controller
+class TourGuiderController extends Controller
 {
-    private TourRepository $tourRepository;
+    private TourGuiderRepository $tourGuiderRepository;
 
-    public function __construct(TourRepository $tourRepo)
+    public function __construct(TourGuiderRepository $tourGuiderRepo)
     {
-        $this->tourRepository = $tourRepo;
+        $this->tourGuiderRepository = $tourGuiderRepo;
     }
 
     public function index(Request $request)
     {
-        $params = [
-            'page' => (int) $request->get('page', 1),
-            'limit' => (int) $request->get('limit', 100),
-        ];
-
         $search = [];
 
-        $tours = $this->tourRepository->getList(
+        $guider = $this->tourGuiderRepository->getAll(
             $search,
-            $params['page'],
-            $params['limit'],
         );
-        $params['total_page'] = $tours->total() ? $tours->lastPage() : 0;
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tours->items(),
-            'paginate' => $params
+            'data' => $guider,
         ]);
     }
-
-    public function detail($id)
+    public function detail(Request $request)
     {
-        $tour = $this->tourRepository->getDetail($id);
-
-        if (empty($tour)) {
-            // return $this->sendError('Tour not found');
-        }
-
+        $guider = $this->tourGuiderRepository->find(
+           $request->id,
+        );
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tour,
+            'data' => $guider,
         ]);
     }
-
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -66,15 +52,14 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'img' => $request->img,
         ];
 
-        $this->tourRepository->create(
+        $this->tourGuiderRepository->create(
             $input
         );
 
@@ -97,15 +82,14 @@ class TourController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'img' => $request->img,
         ];
 
-        $this->tourRepository->update(
+        $this->tourGuiderRepository->update(
             $id,
             $input
         );
@@ -116,7 +100,7 @@ class TourController extends Controller
     }
     public function delete($id)
     {
-        $this->tourRepository->delete(
+        $this->tourGuiderRepository->delete(
             $id,
         );
 

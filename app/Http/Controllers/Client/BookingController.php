@@ -7,7 +7,7 @@ use App\Repositories\Client\TourRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class TourController extends Controller
+class BookingController extends Controller
 {
     private TourRepository $tourRepository;
 
@@ -69,6 +69,7 @@ class TourController extends Controller
             'code' => $request->code,
             'title_tour' => $request->title_tour,
             'meet_place' => $request->meet_place,
+            'meet_date' => $request->meet_date,
             'price' => $request->price,
             'img_tour' => $request->img_tour,
             'note' => $request->note,
@@ -100,6 +101,7 @@ class TourController extends Controller
             'code' => $request->code,
             'title_tour' => $request->title_tour,
             'meet_place' => $request->meet_place,
+            'meet_date' => $request->meet_date,
             'price' => $request->price,
             'img_tour' => $request->img_tour,
             'note' => $request->note,

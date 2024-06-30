@@ -18,7 +18,6 @@ class Tour extends Model
         'code',
         'title_tour',
         'meet_place',
-        'meet_date',
         'price',
         'img_tour',
         'note',

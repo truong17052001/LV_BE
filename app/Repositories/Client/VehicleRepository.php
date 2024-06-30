@@ -1,17 +1,14 @@
 <?php
 namespace App\Repositories\Client;
 
-use App\Models\TourGuider;
+use App\Models\Vehicle;
 use App\Repositories\Base;
 
-class TourGuiderRepository extends Base{
+class VehicleRepository extends Base{
     
     protected $fieldSearchable = [
         'name',
-        'phone',
-        'address',
-        'email',
-        'img',
+        'capacity',
     ];
 
     public function getFieldSearchable(): array {
@@ -20,6 +17,6 @@ class TourGuiderRepository extends Base{
     }
 
     public function model(): string {
-        return TourGuider::class;
+        return Vehicle::class;
     }
 }
