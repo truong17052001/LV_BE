@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('total_price');
             $table->unsignedBigInteger('id_date');
             $table->unsignedBigInteger('id_customer');
-            $table->unsignedBigInteger('id_discount');
+            $table->unsignedBigInteger('id_discount')->nullable();
             $table->timestamps();
             $table->foreign('id_date')->references('id')->on('date_go');
             $table->foreign('id_customer')->references('id')->on('customer');

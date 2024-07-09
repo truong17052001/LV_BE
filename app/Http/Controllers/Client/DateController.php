@@ -30,8 +30,8 @@ class DateController extends Controller
     }
     public function show(Request $request)
     {
-        $date = $this->dateRepository->find(
-           $request->id,
+        $date = $this->dateRepository->getDetail(
+            $request->id,
         );
         return $this->sendResponseApi([
             'code' => 200,
@@ -54,6 +54,7 @@ class DateController extends Controller
         $input = [
             'date' => $request->date,
             'month' => $request->month,
+            'day' => $request->day,
             'seat' => $request->seat,
             'id_tour' => $request->id_tour,
             'id_guider' => $request->id_guider,
@@ -84,6 +85,7 @@ class DateController extends Controller
         $input = [
             'date' => $request->date,
             'month' => $request->month,
+            'day' => $request->day,
             'seat' => $request->seat,
             'id_tour' => $request->id_tour,
             'id_guider' => $request->id_guider,

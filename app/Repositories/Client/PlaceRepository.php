@@ -7,8 +7,8 @@ use App\Repositories\Base;
 class PlaceRepository extends Base{
     
     protected $fieldSearchable = [
-        'name_place',
-        'dec_place',
+        'name',
+        'dec',
         'state',
     ];
 

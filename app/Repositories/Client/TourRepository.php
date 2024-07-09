@@ -40,7 +40,7 @@ class TourRepository extends Base
                 $query->select(['id_tour', 'src']);
             })
             ->with('dateGo', function ($query) {
-                $query->select(['date', 'month', 'seat', 'id_tour', 'id_guider']);
+                $query->select(['id','date', 'month', 'seat', 'id_tour', 'id_guider']);
             })
             ->with('tourGuide', function ($query) {
                 $query->select(['name', 'phone', 'email', 'img']);

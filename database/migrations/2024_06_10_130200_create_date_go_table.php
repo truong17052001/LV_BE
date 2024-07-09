@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->integer('month');
+            $table->integer('day');
             $table->integer('seat');
-            $table->string('id_tour');
+            $table->unsignedBigInteger('id_tour');
             $table->unsignedBigInteger('id_guider');
             $table->timestamps();
             $table->foreign('id_guider')->references('id')->on('tour_guider');

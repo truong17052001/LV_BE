@@ -10,6 +10,12 @@ class AuthRepository extends Base{
         'name',
         'email',
         'password',
+        'is_active',
+        'phone',
+        'gender',
+        'address',
+        'img',
+        'birthday'
     ];
 
     public function getFieldSearchable(): array {

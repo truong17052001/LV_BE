@@ -3,52 +3,42 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Client\TourRepository;
+use App\Repositories\Client\BookingRepository;
+use App\Repositories\Client\DetailBookingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
-    private TourRepository $tourRepository;
+    private BookingRepository $bookingRepository;
+    private DetailBookingRepository $detailBookingRepository;
 
-    public function __construct(TourRepository $tourRepo)
+
+    public function __construct(BookingRepository $bookingRepo, DetailBookingRepository $detailBookingRepo)
     {
-        $this->tourRepository = $tourRepo;
+        $this->bookingRepository = $bookingRepo;
+        $this->detailBookingRepository = $detailBookingRepo;
     }
 
     public function index(Request $request)
     {
-        $params = [
-            'page' => (int) $request->get('page', 1),
-            'limit' => (int) $request->get('limit', 100),
-        ];
-
         $search = [];
-
-        $tours = $this->tourRepository->getList(
+        $bookings = $this->bookingRepository->getAll(
             $search,
-            $params['page'],
-            $params['limit'],
         );
-        $params['total_page'] = $tours->total() ? $tours->lastPage() : 0;
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tours->items(),
-            'paginate' => $params
+            'data' => $bookings,
         ]);
     }
 
     public function detail($id)
     {
-        $tour = $this->tourRepository->getDetail($id);
-
-        if (empty($tour)) {
-            // return $this->sendError('Tour not found');
-        }
+        $booking = $this->bookingRepository->find($id);
 
         return $this->sendResponseApi([
             'code' => 200,
-            'data' => $tour,
+            'data' => $booking,
         ]);
     }
 
@@ -57,7 +47,7 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
 
         ]);
-
+        $date = date('ymdHis');
         if ($validator->fails()) {
             return $this->sendResponseApi([
                 'code' => '400',
@@ -65,19 +55,49 @@ class BookingController extends Controller
             ]);
         }
 
-        $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'meet_date' => $request->meet_date,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+        $booking = [
+            'id_booking' => $date,
+            'time_booking' => $request->time_booking,
+            'status' => $request->status,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'total_price' => $request->total_price,
+            'id_date' => $request->id_date,
+            'id_customer' => $request->id_customer,
+            'id_discount' => $request->id_discount,
         ];
-
-        $this->tourRepository->create(
-            $input
+        $this->bookingRepository->create(
+            $booking
         );
+        $detailList = $request->detailBooking;
+        foreach ($detailList['adults'] as $detail) {
+            $detailBooking = [
+                'name' => $detail['name'],
+                'gender' => $detail['gender'],
+                'birthday' => $detail['birthday'],
+                'type' => 1,
+                'id_booking' => $date,
+            ];
+            $this->detailBookingRepository->create(
+                $detailBooking
+            );
+        }
+
+        foreach ($detailList['childrens'] as $detail) {
+            $detailBookings = [
+                'name' => $detail['name'],
+                'gender' => $detail['gender'],
+                'birthday' => $detail['birthday'],
+                'type' => 0,
+                'id_booking' => $date,
+            ];
+            $this->detailBookingRepository->create(
+                $detailBookings
+            );
+        }
+
 
         return $this->sendResponseApi([
             'code' => 200,
@@ -98,16 +118,19 @@ class BookingController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'title_tour' => $request->title_tour,
-            'meet_place' => $request->meet_place,
-            'meet_date' => $request->meet_date,
-            'price' => $request->price,
-            'img_tour' => $request->img_tour,
-            'note' => $request->note,
+            'time_booking' => $request->time_booking,
+            'status' => $request->status,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'total_price' => $request->total_price,
+            'id_date' => $request->id_date,
+            'id_customer' => $request->id_customer,
+            'id_discount' => $request->id_discount,
         ];
 
-        $this->tourRepository->update(
+        $this->bookingRepository->update(
             $id,
             $input
         );
@@ -118,7 +141,7 @@ class BookingController extends Controller
     }
     public function delete($id)
     {
-        $this->tourRepository->delete(
+        $this->bookingRepository->delete(
             $id,
         );
 

@@ -68,7 +68,6 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $input = $request->all();
-
         try {
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|unique:users",
@@ -83,6 +82,7 @@ class AuthController extends Controller
             }
 
             $input['password'] = Hash::make($input['password']);
+            $input['birthday'] = date('ymdHis');
             $input['is_active'] = 0;
 
             $user = $this->authRepository->create($input);
@@ -138,6 +138,7 @@ class AuthController extends Controller
             }
 
             $user = $this->authRepository->find($token->user_id);
+
             $this->authRepository->update($token->user_id, [
                 "is_active" => 1,
             ]);
@@ -150,5 +151,68 @@ class AuthController extends Controller
                 'error' => $ex->getMessage(),
             ]);
         }
+    }
+    public function index(Request $request)
+    {
+        $search = [];
+
+        $auth = $this->authRepository->getAll(
+            $search,
+        );
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $auth,
+        ]);
+    }
+    public function detail($id)
+    {
+        $auth = $this->authRepository->find($id);
+
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $auth,
+        ]);
+    }
+    public function edit($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendResponseApi([
+                'code' => '400',
+                'error' => $validator->errors()->all()
+            ]);
+        }
+
+        $input = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'gender' => $request->gender,
+            'address' => $request->address,
+            'birthday' => $request->birthday,
+            'img'=> $request->img,
+        ];
+
+        $this->authRepository->update(
+            $id,
+            $input
+        );
+
+        return $this->sendResponseApi([
+            'code' => 200,
+        ]);
+    }
+    public function delete($id)
+    {
+        $this->authRepository->delete(
+            $id,
+        );
+
+        return $this->sendResponseApi([
+            'code' => 200,
+        ]);
     }
 }

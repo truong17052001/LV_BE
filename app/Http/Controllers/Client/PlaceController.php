@@ -54,8 +54,8 @@ class PlaceController extends Controller
         }
 
         $input = [
-            'name_place' => $request->name_place,
-            'dec_place' => $request->dec_place,
+            'name' => $request->name,
+            'dec' => $request->dec,
             'state' => $request->state,
         ];
 
@@ -82,8 +82,8 @@ class PlaceController extends Controller
         }
 
         $input = [
-            'name_place' => $request->name_place,
-            'dec_place' => $request->dec_place,
+            'name' => $request->name,
+            'dec' => $request->dec,
             'state' => $request->state,
         ];
 

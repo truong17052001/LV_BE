@@ -16,17 +16,15 @@ class DateGo extends Model
     protected $fillable = [
         'date',
         'month',
+        'day',
         'seat',
         'id_tour',
         'id_guider',
     ];
 
-    // public function tour(): BelongsTo
-    // {
-    //     return $this->belongTo(Tour::class);
-    // }
-    // public function guider(): BelongsTo
-    // {
-    //     return $this->belongTo(TourGuider::class);
-    // }
+    public function tour(): BelongsTo
+    {
+        return $this->belongsTo(Tour::class, 'id_tour');
+    }
+
 }
