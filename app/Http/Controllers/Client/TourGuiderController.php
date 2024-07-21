@@ -52,11 +52,11 @@ class TourGuiderController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
+            'diachi' => $request->diachi,
             'email' => $request->email,
-            'img' => $request->img,
+            'anh' => $request->anh,
         ];
 
         $this->tourGuiderRepository->create(
@@ -82,11 +82,11 @@ class TourGuiderController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
+            'diachi' => $request->diachi,
             'email' => $request->email,
-            'img' => $request->img,
+            'anh' => $request->anh,
         ];
 
         $this->tourGuiderRepository->update(

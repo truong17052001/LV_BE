@@ -7,15 +7,15 @@ use App\Repositories\Base;
 class AuthRepository extends Base{
     
     protected $fieldSearchable = [
-        'name',
+        'ten',
         'email',
-        'password',
-        'is_active',
-        'phone',
-        'gender',
-        'address',
-        'img',
-        'birthday'
+        'matkhau',
+        'gioitinh',
+        'dakichhoat',
+        'sdt',
+        'diachi',
+        'anh',
+        'ngaysinh'
     ];
 
     public function getFieldSearchable(): array {

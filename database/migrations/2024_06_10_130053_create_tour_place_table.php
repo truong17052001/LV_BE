@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tour_place', function (Blueprint $table) {
             $table->id();
-            $table->string('id_tour');
-            $table->unsignedBigInteger('id_place');
+            $table->string('matour');
+            $table->unsignedBigInteger('madd');
             $table->timestamps();
-            $table->foreign('id_place')->references('id')->on('place');
-            $table->foreign('id_tour')->references('id')->on('tour');
+            $table->foreign('madd')->references('id')->on('place');
+            $table->foreign('matour')->references('id')->on('tour');
         });
     }
 

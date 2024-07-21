@@ -44,11 +44,12 @@ class ActivityController extends Controller
         }
 
         $input = [
-            'id_tour' => $request->id_tour,
-            'title' => $request->title,
-            'day' => $request->day,
-            'date' => $request->date,
-            'description' => $request->description,
+            'matour' => $request->matour,
+            'tieude' => $request->tieude,
+            'stt' => $request->stt,
+            'ngay' => $request->ngay,
+            'mota' => $request->mota,
+     
         ];
 
         $this->activityRepository->create(
@@ -74,11 +75,11 @@ class ActivityController extends Controller
         }
 
         $input = [
-            'id_tour' => $request->id_tour,
-            'title' => $request->title,
-            'day' => $request->day,
-            'date' => $request->date,
-            'description' => $request->description,
+            'matour' => $request->matour,
+            'tieude' => $request->tieude,
+            'stt' => $request->stt,
+            'ngay' => $request->ngay,
+            'mota' => $request->mota,
         ];
 
         $this->activityRepository->update(

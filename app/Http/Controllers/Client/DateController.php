@@ -52,12 +52,12 @@ class DateController extends Controller
         }
 
         $input = [
-            'date' => $request->date,
-            'month' => $request->month,
-            'day' => $request->day,
-            'seat' => $request->seat,
-            'id_tour' => $request->id_tour,
-            'id_guider' => $request->id_guider,
+            'ngay' => $request->ngay,
+            'thang' => $request->thang,
+            'songaydi' => $request->songaydi,
+            'chongoi' => $request->chongoi,
+            'matour' => $request->matour,
+            'mahdv' => $request->mahdv,
         ];
 
         $this->dateRepository->create(
@@ -83,12 +83,12 @@ class DateController extends Controller
         }
 
         $input = [
-            'date' => $request->date,
-            'month' => $request->month,
-            'day' => $request->day,
-            'seat' => $request->seat,
-            'id_tour' => $request->id_tour,
-            'id_guider' => $request->id_guider,
+            'ngay' => $request->ngay,
+            'thang' => $request->thang,
+            'songaydi' => $request->songaydi,
+            'chongoi' => $request->chongoi,
+            'matour' => $request->matour,
+            'mahdv' => $request->mahdv,
         ];
 
         $this->dateRepository->update(

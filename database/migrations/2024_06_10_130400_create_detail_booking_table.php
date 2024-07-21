@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('detail_booking', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('gender');
-            $table->date('birthday');
-            $table->integer('type');
-            $table->unsignedBigInteger('id_booking');
+            $table->string('ten');
+            $table->string('gioitinh');
+            $table->date('ngaysinh');
+            $table->integer('loai');
+            $table->unsignedBigInteger('mabooking');
             $table->timestamps();
-            $table->foreign('id_booking')->references('id_booking')->on('booking');
+            $table->foreign('mabooking')->references('id')->on('booking');
         });
     }
 

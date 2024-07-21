@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tour_guider', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('phone');
-            $table->string('address');
+            $table->string('ten');
+            $table->string('sdt');
+            $table->string('diachi');
             $table->text('email')->nullable();
-            $table->text('img')->nullable();
+            $table->text('anh')->nullable();
             $table->timestamps();
         });
     }

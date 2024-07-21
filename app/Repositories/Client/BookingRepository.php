@@ -7,17 +7,17 @@ use App\Repositories\Base;
 class BookingRepository extends Base
 {
     protected $fieldSearchable = [
-        'id_booking',
-        'time_booking',
-        'status',
-        'name',
-        'phone',
+        'sobooking',
+        'ngay',
+        'trangthai',
+        'ten',
+        'sdt',
         'email',
-        'address',
-        'total_price',
-        'id_date',
-        'id_customer',
-        'id_discount',
+        'diachi',
+        'tongtien',
+        'mand',
+        'makh',
+        'magg',
     ];
 
     public function getFieldSearchable(): array
@@ -30,4 +30,23 @@ class BookingRepository extends Base
         return Booking::class;
     }
 
+    public function getDetail(int $id)
+    {
+        $query = $this->model->newQuery()
+            ->with([
+                'detail' => function ($query) {
+                    $query->select(
+                        'id',
+                        'ten',
+                        'gioitinh',
+                        'ngaysinh',
+                        'loai',
+                        'mabooking',
+                    );
+                }
+            ])
+            ->find($id);
+
+        return $query;
+    }
 }

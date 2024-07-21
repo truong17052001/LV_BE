@@ -7,12 +7,12 @@ use App\Repositories\Base;
 class TourRepository extends Base
 {
     protected $fieldSearchable = [
-        'code',
-        'title_tour',
-        'meet_place',
-        'price',
-        'img_tour',
-        'note',
+        'matour',
+        'tieude',
+        'noikh',
+        'gia_a',
+        'anh',
+        'trangthai',
     ];
 
     public function getFieldSearchable(): array
@@ -25,11 +25,44 @@ class TourRepository extends Base
         return Tour::class;
     }
 
-    public function getList(array $search = [], int $page = null, int $limit = null, array $columns = ['*'])
+    public function getList(array $input, int $page = null, int $limit = null, array $columns = ['*'])
     {
-        $query = $this->allQuery($search);
+        $query = $this->allQuery();
+           
+        if (!empty($input['tieude'])) {
+            $query->where('tieude', 'like', '%' . $input['tieude'] . '%');
+        }
+    
+        if (!empty($input['diemden'])) {
+            $query->whereHas('place', function ($query) use ($input) {
+                $query->where('madd', $input['diemden']);
+            });
+        }
+    
+        if (!empty($input['ngaydi'])) {
+            $query->whereHas('dateGo', function ($query) use ($input) {
+                $query->whereDate('ngay', $input['ngaydi']);
+            });
+        }
 
-        return $query->select(['id', 'code', 'title_tour', 'meet_place', 'price', 'img_tour', 'note'])
+        if (!empty($input['songay'])) {
+            $query->whereHas('dateGo', function ($query) use ($input) {
+                $query->where('songaydi', $input['songay']);
+            });
+        }
+
+        if (!empty($input['songuoi'])) {
+            $query->whereHas('dateGo', function ($query) use ($input) {
+                $query->where('chongoi', $input['songuoi']);
+            });
+        }
+
+        if (!empty($input['giamin']) && !empty($input['giamax'])) {
+            $query->where('gia_a', '<=', $input['giamax'])
+                    ->where('gia_a', '>=', $input['giamin']);
+        }
+
+        return $query->select(['id', 'matour', 'tieude', 'noikh', 'gia_a', 'gia_c', 'anh', 'trangthai'])
             ->orderBy('id', 'asc')->paginate($limit, $columns, 'page', $page);
     }
 
@@ -37,18 +70,28 @@ class TourRepository extends Base
     {
         $query = $this->model->newQuery()
             ->with('images', function ($query) {
-                $query->select(['id_tour', 'src']);
+                $query->select(['matour', 'nguon']);
             })
             ->with('dateGo', function ($query) {
-                $query->select(['id','date', 'month', 'seat', 'id_tour', 'id_guider']);
+                $query->select(['id', 'ngay', 'thang', 'songaydi', 'chongoi', 'matour', 'mahdv']);
             })
             ->with('tourGuide', function ($query) {
-                $query->select(['name', 'phone', 'email', 'img']);
+                $query->select(['ten', 'sdt', 'email', 'anh']);
             })
             ->with('activities', function ($query) {
-                $query->select(['id_tour', 'day', 'date', 'title', 'description']);
+                $query->select(['matour', 'stt', 'ngay', 'tieude', 'mota']);
+            })
+            ->with('hotel', function ($query) {
+                $query->select(['matour', 'maks']);
+            })
+            ->with('vehicle', function ($query) {
+                $query->select(['matour', 'mapt']);
+            })
+            ->with('place', function ($query) {
+                $query->select(['matour', 'madd']);
             });
-
         return $query->find($id);
     }
+    
+    
 }

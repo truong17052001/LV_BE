@@ -54,8 +54,8 @@ class VehicleController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'capacity' => $request->capacity,
+            'ten' => $request->ten,
+            'loai' => $request->loai,
         ];
 
         $this->vehicleRepository->create(
@@ -81,8 +81,8 @@ class VehicleController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'capacity' => $request->capacity,
+            'ten' => $request->ten,
+            'loai' => $request->loai,
         ];
 
         $this->vehicleRepository->update(

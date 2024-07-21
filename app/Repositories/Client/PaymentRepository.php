@@ -1,17 +1,17 @@
 <?php
 namespace App\Repositories\Client;
 
-use App\Models\Activity;
+use App\Models\Payment;
 use App\Repositories\Base;
 
-class ActivityRepository extends Base{
+class PaymentRepository extends Base{
     
     protected $fieldSearchable = [
-        'matour',
-        'tieude',
-        'songaydi',
-        'ngay',
-        'mota',
+        'giatri',
+        'trangthai',
+        'pttt',
+        'mabooking',
+        'makh'
     ];
 
     public function getFieldSearchable(): array {
@@ -20,6 +20,6 @@ class ActivityRepository extends Base{
     }
 
     public function model(): string {
-        return Activity::class;
+        return Payment::class;
     }
 }

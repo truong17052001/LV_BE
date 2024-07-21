@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('image', function (Blueprint $table) {
             $table->id();
-            $table->string('id_tour');
-            $table->text('src');
+            $table->string('matour');
+            $table->text('nguon');
             $table->timestamps();
-            $table->foreign('id_tour')->references('id')->on('tour');
+            $table->foreign('matour')->references('id')->on('tour');
         });
     }
 

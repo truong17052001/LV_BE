@@ -44,8 +44,8 @@ class ImageController extends Controller
         }
 
         $input = [
-            'id_tour' => $request->id_tour,
-            'src' => $request->src,
+            'matour' => $request->matour,
+            'nguon' => $request->nguon,
         ];
 
         $this->imageRepository->create(
@@ -71,8 +71,8 @@ class ImageController extends Controller
         }
 
         $input = [
-            'id_tour' => $request->id_tour,
-            'src' => $request->src,
+            'matour' => $request->matour,
+            'nguon' => $request->nguon,
         ];
 
         $this->imageRepository->update(

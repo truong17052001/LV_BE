@@ -54,12 +54,13 @@ class HotelController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
+            'diachi' => $request->diachi,
             'email' => $request->email,
             'website' => $request->website,
-            'standard' => $request->standard,
+            'tieuchuan' => $request->tieuchuan,
+       
         ];
 
         $this->hotelRepository->create(
@@ -85,12 +86,12 @@ class HotelController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
+            'diachi' => $request->diachi,
             'email' => $request->email,
             'website' => $request->website,
-            'standard' => $request->standard,
+            'tieuchuan' => $request->tieuchuan,
         ];
 
         $this->hotelRepository->update(

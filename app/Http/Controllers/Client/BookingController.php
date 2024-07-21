@@ -34,7 +34,7 @@ class BookingController extends Controller
 
     public function detail($id)
     {
-        $booking = $this->bookingRepository->find($id);
+        $booking = $this->bookingRepository->getDetail($id);
 
         return $this->sendResponseApi([
             'code' => 200,
@@ -56,29 +56,29 @@ class BookingController extends Controller
         }
 
         $booking = [
-            'id_booking' => $date,
-            'time_booking' => $request->time_booking,
-            'status' => $request->status,
-            'name' => $request->name,
-            'phone' => $request->phone,
+            'sobooking' => $date,
+            'ngay' => $request->ngay,
+            'trangthai' => $request->trangthai,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
             'email' => $request->email,
-            'address' => $request->address,
-            'total_price' => $request->total_price,
-            'id_date' => $request->id_date,
-            'id_customer' => $request->id_customer,
-            'id_discount' => $request->id_discount,
+            'diachi' => $request->diachi,
+            'tongtien' => $request->tongtien,
+            'mand' => $request->mand,
+            'makh' => $request->makh,
+            'magg' => $request->magg,
         ];
-        $this->bookingRepository->create(
+        $booking = $this->bookingRepository->create(
             $booking
         );
         $detailList = $request->detailBooking;
         foreach ($detailList['adults'] as $detail) {
             $detailBooking = [
-                'name' => $detail['name'],
-                'gender' => $detail['gender'],
-                'birthday' => $detail['birthday'],
-                'type' => 1,
-                'id_booking' => $date,
+                'ten' => $detail['ten'],
+                'gioitinh' => $detail['gioitinh'],
+                'ngaysinh' => $detail['ngaysinh'],
+                'loai' => 1,
+                'mabooking' => $booking['id'],
             ];
             $this->detailBookingRepository->create(
                 $detailBooking
@@ -87,11 +87,11 @@ class BookingController extends Controller
 
         foreach ($detailList['childrens'] as $detail) {
             $detailBookings = [
-                'name' => $detail['name'],
-                'gender' => $detail['gender'],
-                'birthday' => $detail['birthday'],
-                'type' => 0,
-                'id_booking' => $date,
+                'ten' => $detail['ten'],
+                'gioitinh' => $detail['gioitinh'],
+                'ngaysinh' => $detail['ngaysinh'],
+                'loai' => 0,
+                'mabooking' => $date,
             ];
             $this->detailBookingRepository->create(
                 $detailBookings
@@ -101,6 +101,7 @@ class BookingController extends Controller
 
         return $this->sendResponseApi([
             'code' => 200,
+            'data' => $booking
         ]);
     }
 
@@ -118,16 +119,16 @@ class BookingController extends Controller
         }
 
         $input = [
-            'time_booking' => $request->time_booking,
-            'status' => $request->status,
-            'name' => $request->name,
-            'phone' => $request->phone,
+            'ngay' => $request->ngay,
+            'trangthai' => $request->trangthai,
+            'ten' => $request->ten,
+            'sdt' => $request->sdt,
             'email' => $request->email,
-            'address' => $request->address,
-            'total_price' => $request->total_price,
-            'id_date' => $request->id_date,
-            'id_customer' => $request->id_customer,
-            'id_discount' => $request->id_discount,
+            'diachi' => $request->diachi,
+            'tongtien' => $request->tongtien,
+            'mand' => $request->mand,
+            'makh' => $request->makh,
+            'magg' => $request->magg,
         ];
 
         $this->bookingRepository->update(

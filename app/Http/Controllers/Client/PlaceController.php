@@ -54,9 +54,9 @@ class PlaceController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'dec' => $request->dec,
-            'state' => $request->state,
+            'ten' => $request->ten,
+            'mota' => $request->mota,
+            'trangthai' => $request->trangthai,
         ];
 
         $this->placeRepository->create(
@@ -82,9 +82,9 @@ class PlaceController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
-            'dec' => $request->dec,
-            'state' => $request->state,
+            'ten' => $request->ten,
+            'mota' => $request->mota,
+            'trangthai' => $request->trangthai,
         ];
 
         $this->placeRepository->update(

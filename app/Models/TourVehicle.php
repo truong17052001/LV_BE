@@ -4,20 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Hotel extends Model
+class TourVehicle extends Model
 {
-    public $table = 'hotel';
+    public $table = 'tour_vehicle'; 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'ten',
-        'sdt',
-        'diachi',
-        'email',
-        'website',
-        'tieuchuan',
+        'matour',
+        'mapt',
     ];
 }

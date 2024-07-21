@@ -7,8 +7,8 @@ use App\Repositories\Base;
 class VehicleRepository extends Base{
     
     protected $fieldSearchable = [
-        'name',
-        'capacity',
+        'ten',
+        'loai',
     ];
 
     public function getFieldSearchable(): array {

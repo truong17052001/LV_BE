@@ -7,11 +7,11 @@ use App\Repositories\Base;
 class TourGuiderRepository extends Base{
     
     protected $fieldSearchable = [
-        'name',
-        'phone',
-        'address',
+        'ten',
+        'sdt',
+        'diachi',
         'email',
-        'img',
+        'anh',
     ];
 
     public function getFieldSearchable(): array {

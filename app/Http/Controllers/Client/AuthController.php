@@ -17,17 +17,18 @@ class AuthController extends Controller
     private AuthRepository $authRepository;
     private TokenRepository $toKenRepository;
     //
-    public function __construct(AuthRepository $authRepo,TokenRepository $toKenRepo)
+    public function __construct(AuthRepository $authRepo, TokenRepository $toKenRepo)
     {
         $this->authRepository = $authRepo;
         $this->toKenRepository = $toKenRepo;
     }
     public function login(Request $request)
     {
+        // dd($request->all());
         try {
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|exists:users,email",
-                "password" => "required|min:7"
+                "matkhau" => "required|min:7"
             ]);
 
             if ($validator->fails()) {
@@ -38,8 +39,7 @@ class AuthController extends Controller
             }
 
             $user = $this->authRepository->findByColumns(['email' => $request['email']]);
-
-            if (empty($user) || !Hash::check($request['password'], $user->password)) {
+            if (empty($user) || !Hash::check($request['matkhau'], $user->matkhau)) {
                 return $this->sendResponseApi([
                     'code' => 401,
                     'error' => 'Invalid Login'
@@ -65,13 +65,54 @@ class AuthController extends Controller
         }
     }
 
+    public function changePassword($id, Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendResponseApi([
+                    'code' => '400',
+                    'error' => $validator->errors()->all()
+                ]);
+            }
+            $user = $this->authRepository->find($id);
+            $input = [
+                'matkhau' => Hash::make($request->moi),
+            ];
+            if (empty($user) || !Hash::check($request['cu'], $user->matkhau)) {
+                return $this->sendResponseApi([
+                    'code' => 401,
+                    'error' => 'Invalid Login'
+                ]);
+            } else {
+                $this->authRepository->update($id, $input);
+            }
+
+            return $this->sendResponseApi([
+                'code' => 200,
+                'data' => [
+                    'user' => $user,
+                ]
+            ]);
+
+        } catch (\Throwable $ex) {
+            return $this->sendResponseApi([
+                'code' => 500,
+                'error' => $ex->getMessage(),
+            ]);
+        }
+    }
+
     public function register(Request $request)
     {
         $input = $request->all();
         try {
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|unique:users",
-                "password" => "required|min:7"
+                "matkhau" => "required|min:7"
             ]);
 
             if ($validator->fails()) {
@@ -81,9 +122,10 @@ class AuthController extends Controller
                 ]);
             }
 
-            $input['password'] = Hash::make($input['password']);
-            $input['birthday'] = date('ymdHis');
-            $input['is_active'] = 0;
+            $input['ten'] = "Chờ cập nhật";
+            $input['matkhau'] = Hash::make($input['matkhau']);
+            $input['ngaysinh'] = date('ymdHis');
+            $input['dakichhoat'] = 0;
 
             $user = $this->authRepository->create($input);
 
@@ -101,57 +143,7 @@ class AuthController extends Controller
             ]);
         }
     }
-    public function active(Request $request)
-    {
-        $input = $request->all();
 
-        try {
-            $validator = Validator::make($request->all(), [
-                "otp" => "required|numeric|digits:6",
-            ]);
-
-            if ($validator->fails()) {
-                return $this->sendResponseApi([
-                    'code' => 400,
-                    'error' => $validator->errors()->all()
-                ]);
-            }
-
-            $token = $this->toKenRepository->findByColumns(
-                [
-                    "otp" => $input["otp"],
-                ]
-            );
-
-            if (empty($token)) {
-                return $this->sendResponseApi([
-                    "code" => 400,
-                    "error" => "Invalid Token check your input and try again"
-                ]);
-            }
-
-            if ($token->expired_at > Carbon::now()->format("Y-m-d H:i:s")) {
-                return $this->sendResponseApi([
-                    "code" => 400,
-                    "error" => "Token has expired"
-                ]);
-            }
-
-            $user = $this->authRepository->find($token->user_id);
-
-            $this->authRepository->update($token->user_id, [
-                "is_active" => 1,
-            ]);
-            return $this->sendResponseApi([
-                "code" => 200,
-            ]);
-        } catch (\Throwable $ex) {
-            return $this->sendResponseApi([
-                'code' => 500,
-                'error' => $ex->getMessage(),
-            ]);
-        }
-    }
     public function index(Request $request)
     {
         $search = [];
@@ -187,13 +179,13 @@ class AuthController extends Controller
         }
 
         $input = [
-            'name' => $request->name,
+            'ten' => $request->ten,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'gender' => $request->gender,
-            'address' => $request->address,
-            'birthday' => $request->birthday,
-            'img'=> $request->img,
+            'sdt' => $request->sdt,
+            'gioitinh' => $request->gioitinh,
+            'diachi' => $request->diachi,
+            'ngaysinh' => $request->ngaysinh,
+            'anh' => $request->anh,
         ];
 
         $this->authRepository->update(

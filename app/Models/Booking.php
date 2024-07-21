@@ -14,20 +14,20 @@ class Booking extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id_booking',
-        'time_booking',
-        'status',
-        'name',
-        'phone',
+        'sobooking',
+        'ngay',
+        'trangthai',
+        'ten',
+        'sdt',
         'email',
-        'address',
-        'total_price',
-        'id_date',
-        'id_customer',
-        'id_discount',
+        'diachi',
+        'tongtien',
+        'mand',
+        'makh',
+        'magg',
     ];
-    public function detailBookings(): HasMany
+    public function detail(): HasMany
     {
-        return $this->hasMany(Image::class, 'id_tour');
+        return $this->hasMany(DetailBooking::class, 'mabooking');
     }
 }

@@ -13,8 +13,8 @@ class Place extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'dec',
-        'state',
+        'ten',
+        'mota',
+        'trangthai',
     ];
 }

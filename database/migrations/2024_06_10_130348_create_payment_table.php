@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('payment', function (Blueprint $table) {
             $table->id();
-            $table->integer('price_paid');
-            $table->integer('price_unpaid');
-            $table->string('method');
-            $table->unsignedBigInteger('id_booking');
-            $table->unsignedBigInteger('id_customer');
+            $table->integer('giatri');
+            $table->string('trangthai');
+            $table->string('pttt');
+            $table->unsignedBigInteger('mabooking');
+            $table->unsignedBigInteger('makh');
             $table->timestamps();
-            $table->foreign('id_booking')->references('id_booking')->on('booking');
-            $table->foreign('id_customer')->references('id')->on('customer');
+            $table->foreign('mabooking')->references('id')->on('booking');
+            $table->foreign('makh')->references('id')->on('customer');
         });
     }
 

@@ -64,54 +64,51 @@ class SaveJsonToDatabase extends Command
 
         $jsonDetail = File::get(storage_path('app/merged.json'));
         $details = json_decode($jsonDetail, true);
-
+        
         foreach ($data as $index => $item) {
             $tour = $this->tourRepository->upsert([
-                'code' => $item['tourCode']
+                'matour' => $item['tourCode'],
             ], [
-                'code' => $item['tourCode'],
-                'title_tour' => $item['destination'],
-                'meet_place' => $item['departureName'],
-                'price' => $item['adultPrice'],
-                'img_tour' => $item['imageUrl'],
-                'note' => $item['tourLineTitle'],
+                'matour' => $item['tourCode'],
+                'tieude' => $item['destination'],
+                'noikh' => $item['departureName'],
+                'gia_a' => $item['adultPrice'],
+                'gia_c' => $item['adultPrice']*50/100,
+                'anh' => $item['imageUrl'],
+                'trangthai' => $item['tourLineTitle'],
             ]);
 
             foreach ($details as $index => $detail) {
                 $data = $detail['data' . random_int(1, 4)];
                 foreach ($data['listImageUrl'] as $index => $img) {
                     $this->imageRepository->create([
-                        'id_tour' => $tour->id,
-                        'src' => $img['imageUrl']
+                        'matour' => $tour->id,
+                        'nguon' => $img['imageUrl']
                     ]);
                 }
 
                 foreach ($data['listTourProgram'] as $index => $tourProgram) {
                     $this->activityRepository->upsert([
-                        'id_tour' => $tour->id,
-                        'title' => $tourProgram['title'],
+                        'matour' => $tour->id,
                     ],[
-                        'id_tour' => $tour->id,
-                        'day' => $tourProgram['day'],
-                        'date' => $tourProgram['date'],
-                        'title' => $tourProgram['title'],
-                        'description' => $tourProgram['detail']
+                        'matour' => $tour->id,
+                        'stt' => $tourProgram['day'],
+                        'ngay' => $tourProgram['date'],
+                        'tieude' => $tourProgram['title'],
+                        'mota' => $tourProgram['detail']
                     ]);
                 }
 
                 if ($data['tourGuide']) {
                     $this->tourGuiderRepository->upsert([
-                        'name' => $data['tourGuide']['fullName'],
-                        'phone' => $data['tourGuide']['phone'],
-                        'address' => 'HCM',
-                        'email' => null,
-                        'img' => null
+                        'ten' => $data['tourGuide']['fullName'],
+                        'sdt' => $data['tourGuide']['phone'],
                     ], [
-                        'name' => $data['tourGuide']['fullName'],
-                        'phone' => $data['tourGuide']['phone'],
-                        'address' => 'HCM',
+                        'ten' => $data['tourGuide']['fullName'],
+                        'sdt' => $data['tourGuide']['phone'],
+                        'diachi' => 'HCM',
                         'email' => null,
-                        'img' => null
+                        'anh' => null
                     ]);
                 }
 

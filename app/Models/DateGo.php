@@ -14,17 +14,17 @@ class DateGo extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'date',
-        'month',
-        'day',
-        'seat',
-        'id_tour',
-        'id_guider',
+        'ngay',
+        'thang',
+        'songaydi',
+        'chongoi',
+        'matour',
+        'mahdv',
     ];
 
     public function tour(): BelongsTo
     {
-        return $this->belongsTo(Tour::class, 'id_tour');
+        return $this->belongsTo(Tour::class, 'matour');
     }
 
 }

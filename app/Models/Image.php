@@ -13,7 +13,7 @@ class Image extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id_tour',
-        'src',
+        'matour',
+        'nguon',
     ];
 }

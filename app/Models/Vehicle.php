@@ -13,7 +13,7 @@ class Vehicle extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'capacity',
+        'ten',
+        'loai',
     ];
 }

@@ -12,21 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking', function (Blueprint $table) {
-            $table->string('id_booking')->primary();
-            $table->date('time_booking');
-            $table->string('status');
-            $table->string('name');
-            $table->string('phone');
+            $table->id();
+            $table->string('sobooking');
+            $table->date('ngay');
+            $table->string('trangthai');
+            $table->string('ten');
+            $table->string('sdt');
             $table->text('email');
-            $table->text('address');
-            $table->integer('total_price');
-            $table->unsignedBigInteger('id_date');
-            $table->unsignedBigInteger('id_customer');
-            $table->unsignedBigInteger('id_discount')->nullable();
+            $table->text('diachi');
+            $table->integer('tongtien');
+            $table->unsignedBigInteger('mand');
+            $table->unsignedBigInteger('makh');
+            $table->unsignedBigInteger('magg')->nullable();
             $table->timestamps();
-            $table->foreign('id_date')->references('id')->on('date_go');
-            $table->foreign('id_customer')->references('id')->on('customer');
-            $table->foreign('id_discount')->references('id')->on('discount');
+            $table->foreign('mand')->references('id')->on('date_go');
+            $table->foreign('makh')->references('id')->on('customer');
+            $table->foreign('magg')->references('id')->on('discount');
         });
     }
 

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('vehicle', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('capacity');
+            $table->string('ten');
+            $table->string('loai');
             $table->timestamps();
         });
     }

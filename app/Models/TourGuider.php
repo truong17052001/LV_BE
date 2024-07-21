@@ -13,10 +13,10 @@ class TourGuider extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'phone',
-        'address',
+        'ten',
+        'sdt',
+        'diachi',
         'email',
-        'img',
+        'anh',
     ];
 }

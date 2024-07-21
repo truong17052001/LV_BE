@@ -7,11 +7,11 @@ use App\Repositories\Base;
 class DetailBookingRepository extends Base
 {
     protected $fieldSearchable = [
-        'name',
-        'gender',
-        'birthday',
-        'type',
-        'id_booking',
+        'ten',
+        'gioitinh',
+        'ngaysinh',
+        'loai',
+        'mabooking',
     ];
 
     public function getFieldSearchable(): array

@@ -97,7 +97,18 @@ abstract class Base
         return $model->delete();
     }
 
-    public function upsert(array $input, array $updateColumns = []) {
+    public function deleteByColumns(array $conditions)
+    {
+        $query = $this->model->newQuery();
+        foreach ($conditions as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        return $query->delete();
+    }
+
+    public function upsert(array $input, array $updateColumns = [])
+    {
         $query = $this->model->newQuery();
 
         $existingRecord = $query->where($input)->first();

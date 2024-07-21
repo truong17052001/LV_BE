@@ -15,30 +15,48 @@ class Tour extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
-        'title_tour',
-        'meet_place',
-        'price',
-        'img_tour',
-        'note',
+        'matour',
+        'tieude',
+        'noikh',
+        'gia_a',
+        'gia_c',
+        'anh',
+        'trangthai',
     ];
+
+    public function hotel(): HasMany
+    {
+        return $this->hasMany(TourHotel::class, 'matour');
+    }
+
+    public function vehicle(): HasMany
+    {
+        return $this->hasMany(TourVehicle::class, 'matour');
+    }
+
+    public function place(): HasMany
+    {
+        return $this->hasMany(TourPlace::class, 'matour');
+    }
+
     public function images(): HasMany
     {
-        return $this->hasMany(Image::class, 'id_tour');
+        return $this->hasMany(Image::class, 'matour');
     }
 
     public function dateGo(): HasMany
     {
-        return $this->hasMany(DateGo::class, 'id_tour');
-    }
-
-    public function tourGuide(): HasOneThrough
-    {
-        return $this->hasOneThrough(TourGuider::class, DateGo::class, 'id_tour', 'id', 'id', 'id_guider');
+        return $this->hasMany(DateGo::class, 'matour');
     }
 
     public function activities(): HasMany 
     {
-        return $this->hasMany(Activity::class, 'id_tour');
+        return $this->hasMany(Activity::class, 'matour');
     }
+
+    public function tourGuide(): HasOneThrough
+    {
+        return $this->hasOneThrough(TourGuider::class, DateGo::class, 'matour', 'id', 'id', 'mahdv');
+    }
+
 }

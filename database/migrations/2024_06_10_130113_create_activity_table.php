@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('activity', function (Blueprint $table) {
             $table->id();
-            $table->string('id_tour');
-            $table->timestamp('date');
-            $table->integer('day');
-            $table->text('title');
-            $table->text('description');
+            $table->string('matour');
+            $table->timestamp('ngay');
+            $table->integer('stt');
+            $table->text('tieude');
+            $table->text('mota');
             $table->timestamps();
-            $table->foreign('id_tour')->references('id')->on('tour');
+            $table->foreign('matour')->references('id')->on('tour');
         });
     }
 

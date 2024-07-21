@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('tour', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->text('title_tour');
-            $table->string('meet_place');
-            $table->decimal('price', 15, 2);
-            $table->text('img_tour');
-            $table->string('note');
+            $table->string('matour');
+            $table->text('tieude');
+            $table->string('noikh');
+            $table->decimal('gia_a', 15, 2);
+            $table->decimal('gia_c', 15, 2);
+            $table->text('anh');
+            $table->string('trangthai');
             $table->timestamps();
         });
     }

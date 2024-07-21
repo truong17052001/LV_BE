@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('date_go', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->integer('month');
-            $table->integer('day');
-            $table->integer('seat');
-            $table->unsignedBigInteger('id_tour');
-            $table->unsignedBigInteger('id_guider');
+            $table->date('ngay');
+            $table->integer('thang');
+            $table->integer('songaydi');
+            $table->integer('chongoi');
+            $table->unsignedBigInteger('matour');
+            $table->unsignedBigInteger('mahdv');
             $table->timestamps();
-            $table->foreign('id_guider')->references('id')->on('tour_guider');
-            $table->foreign('id_tour')->references('id')->on('tour');
+            $table->foreign('mahdv')->references('id')->on('tour_guider');
+            $table->foreign('matour')->references('id')->on('tour');
         });
     }
 

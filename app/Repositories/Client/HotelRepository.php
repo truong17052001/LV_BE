@@ -8,12 +8,12 @@ class HotelRepository extends Base
 {
 
     protected $fieldSearchable = [
-        'name',
-        'phone',
-        'address',
+        'ten',
+        'sdt',
+        'diachi',
         'email',
         'website',
-        'standard',
+        'tieuchuan',
     ];
 
     public function getFieldSearchable(): array

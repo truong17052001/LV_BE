@@ -7,6 +7,7 @@ Route::prefix('user')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('/login', 'login')->name('login');
         Route::post('/register', 'register')->name('register');
+        Route::post('/password/{id}', 'changePassword')->name('changePassword');
         Route::post('/active', 'active')->name('active');
         Route::get('/', 'index')->name('index');
         Route::get('/{id}', 'detail')->name('detail');

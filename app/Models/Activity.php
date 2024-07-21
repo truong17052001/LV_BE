@@ -13,10 +13,10 @@ class Activity extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id_tour',
-        'title',
-        'day',
-        'date',
-        'description',
+        'matour',
+        'tieude',
+        'stt',
+        'ngay',
+        'mota',
     ];
 }

@@ -7,9 +7,9 @@ use App\Repositories\Base;
 class PlaceRepository extends Base{
     
     protected $fieldSearchable = [
-        'name',
-        'dec',
-        'state',
+        'ten',
+        'mota',
+        'trangthai',
     ];
 
     public function getFieldSearchable(): array {

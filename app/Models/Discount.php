@@ -13,8 +13,8 @@ class Discount extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
-        'percent',
-        'expired_at',
+        'magiamgia',
+        'phantram',
+        'hansd',
     ];
 }

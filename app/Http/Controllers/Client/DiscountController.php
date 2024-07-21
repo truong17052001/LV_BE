@@ -55,9 +55,9 @@ class DiscountController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'percent' => $request->percent,
-            'expired_at' => $request->expired_at,
+            'magiamgia' => $request->magiamgia,
+            'phantram' => $request->phantram,
+            'hansd' => $request->hansd,
         ];
 
         $this->discountRepository->create(
@@ -83,9 +83,9 @@ class DiscountController extends Controller
         }
 
         $input = [
-            'code' => $request->code,
-            'percent' => $request->percent,
-            'expired_at' => $request->expired_at,
+            'magiamgia' => $request->magiamgia,
+            'phantram' => $request->phantram,
+            'hansd' => $request->hansd,
         ];
 
         $this->discountRepository->update(

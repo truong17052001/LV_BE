@@ -8,12 +8,12 @@ class DateRepository extends Base
 {
 
     protected $fieldSearchable = [
-        'date',
-        'month',
-        'day',
-        'seat',
-        'id_tour',
-        'id_guider',
+        'ngay',
+        'thang',
+        'songaydi',
+        'chongoi',
+        'matour',
+        'mahdv',
     ];
 
     public function getFieldSearchable(): array
@@ -32,7 +32,7 @@ class DateRepository extends Base
         $query = $this->model->newQuery()
             ->with([
                 'tour' => function ($query) {
-                    $query->select('id', 'title_tour', 'img_tour', 'price');
+                    $query->select('id', 'tieude', 'anh', 'gia_a', 'gia_c', 'matour','noikh');
                 }
             ])
             ->find($id);

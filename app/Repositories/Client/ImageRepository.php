@@ -7,8 +7,8 @@ use App\Repositories\Base;
 class ImageRepository extends Base{
     
     protected $fieldSearchable = [
-        'id_tour',
-        'src',
+        'matour',
+        'nguon',
     ];
 
     public function getFieldSearchable(): array {
