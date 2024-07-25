@@ -10,6 +10,7 @@ Route::prefix('user')->group(function () {
         Route::post('/password/{id}', 'changePassword')->name('changePassword');
         Route::post('/active', 'active')->name('active');
         Route::get('/', 'index')->name('index');
+        Route::get('/booking/{id}', 'booking')->name('booking');
         Route::get('/{id}', 'detail')->name('detail');
         Route::post('/add', 'register')->name('register');
         Route::put('/edit/{id}', 'edit')->name('edit');

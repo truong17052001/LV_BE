@@ -71,6 +71,9 @@ class TourGuiderController extends Controller
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
+            "email" => "required|email|unique:tour_guider",
+            "ten" => "required",
+            "diachi" => "required",
 
         ]);
 

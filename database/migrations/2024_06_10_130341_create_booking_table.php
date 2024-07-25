@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('magg')->nullable();
             $table->timestamps();
             $table->foreign('mand')->references('id')->on('date_go');
-            $table->foreign('makh')->references('id')->on('customer');
+            $table->foreign('makh')->references('id')->on('users');
             $table->foreign('magg')->references('id')->on('discount');
         });
     }

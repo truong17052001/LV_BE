@@ -30,4 +30,6 @@ class Booking extends Model
     {
         return $this->hasMany(DetailBooking::class, 'mabooking');
     }
+
+    
 }

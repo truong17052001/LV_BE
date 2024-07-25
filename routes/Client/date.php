@@ -10,6 +10,7 @@ Route::prefix('date')->group(function () {
         Route::post('/add', 'create')->name('create');
         Route::put('/edit/{id}', 'edit')->name('edit');
         Route::delete('/delete/{id}', 'delete')->name('delete');
+        Route::get('/{id}/people/export', 'export')->name('export');
     });
     
 });;

@@ -54,79 +54,138 @@ class PaymentController extends Controller
                 'Content-Length: ' . strlen($data)
             )
         );
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        //execute post
+        curl_setopt($ch, CURLOPT_TIMEOUT, 100);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 100);
+
+        // Tắt xác thực SSL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        // Execute post
         $result = curl_exec($ch);
-        //close connection
+        $error = curl_error($ch);
+        // Close connection
         curl_close($ch);
+
+        if ($result === false) {
+            throw new \Exception('cURL Error: ' . $error);
+        }
+
         return $result;
     }
 
+
     public function momo_payment(Request $request)
     {
-        $endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor";
+        $payment = $this->paymentRepository->create([
+            'giatri' => $request->giatri,
+            'pttt' => $request->pttt,
+            'trangthai' => 'Chưa thanh toán',
+            'mabooking' => $request->mabooking,
+            'makh' => $request->makh,
+        ]);
 
-        $partnerCode = 'MOMOBKUN20180529';
-        $accessKey = 'klm05TvNBzhg7h7j';
-        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
+        $partnerCode = env('MOMO_PARTNER_CODE', 'default_partner_code');
+        $accessKey = env('MOMO_ACCESS_KEY', 'default_access_key');
+        $secretKey = env('MOMO_SECRET_KEY', 'default_secret_key');
         $orderInfo = "Thanh toán qua MoMo";
-        $amount = "10000";
-        $orderId = time() . "";
-        $returnUrl = "http://localhost:8000/atm/result_atm.php";
-        $notifyurl = "http://localhost:8000/atm/ipn_momo.php";
-        // Lưu ý: link notifyUrl không phải là dạng localhost
-        $bankCode = "SML";
+        $amount = $request->giatri;
+        $orderId = time();
+        $redirectUrl = 'http://localhost:5173/';
+        $ipnUrl = 'http://localhost:5173/';
+        $extraData = $payment->id;
 
-    
-        $requestId = time() . "";
-        $requestType = "payWithMoMoATM";
-        $extraData = "";
-        //before sign HMAC SHA256 signature
-        $rawHashArr = array(
+        $requestId = time();
+        $requestType = "payWithATM";
+        // $requestType = "captureWallet";
+
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+        $data = [
             'partnerCode' => $partnerCode,
-            'accessKey' => $accessKey,
+            'partnerName' => "Test",
+            'storeId' => "MomoTestStore",
             'requestId' => $requestId,
             'amount' => $amount,
             'orderId' => $orderId,
             'orderInfo' => $orderInfo,
-            'bankCode' => $bankCode,
-            'returnUrl' => $returnUrl,
-            'notifyUrl' => $notifyurl,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
             'extraData' => $extraData,
-            'requestType' => $requestType
-        );
-            // echo $serectkey;die;
-            $rawHash = "partnerCode=" . $partnerCode . "&accessKey=" . $accessKey . "&requestId=" . $requestId . "&bankCode=" . $bankCode . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&returnUrl=" . $returnUrl . "&notifyUrl=" . $notifyurl . "&extraData=" . $extraData . "&requestType=" . $requestType;
-            $signature = hash_hmac("sha256", $rawHash, $secretKey);
+            'requestType' => $requestType,
+            'signature' => $signature,
+        ];
 
-            $data = array(
-                'partnerCode' => $partnerCode,
-                'accessKey' => $accessKey,
-                'requestId' => $requestId,
-                'amount' => $amount,
-                'orderId' => $orderId,
-                'orderInfo' => $orderInfo,
-                'returnUrl' => $returnUrl,
-                'bankCode' => $bankCode,
-                'notifyUrl' => $notifyurl,
-                'extraData' => $extraData,
-                'requestType' => $requestType,
-                'signature' => $signature
-            );
+        try {
             $result = $this->execPostRequest($endpoint, json_encode($data));
-            $jsonResult = json_decode($result, true);  // decode json
+            $jsonResult = json_decode($result, true);
+            if (isset($jsonResult['payUrl'])) {
+                return $jsonResult['payUrl'];
+            } else {
+                return $this->sendResponseApi([
+                    'code' => 500,
+                    'error' => 'Không thể tạo thanh toán với MoMo',
+                    'details' => $jsonResult
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->sendResponseApi([
+                'code' => 500,
+                'error' => 'Đã có lỗi xảy ra: ' . $e->getMessage(),
+            ]);
+        }
+    }
 
-            error_log(print_r($jsonResult, true));
-            dd($jsonResult);
-            header('Location: ' . $jsonResult['payUrl']);
+    public function momoCallback(Request $request)
+    {
+        $data = $request->all();
+        $resultCode = $data['resultCode'] ?? '';
+        $extraData = $data['extraData'] ?? '';
+
+        $paymentId = (int) $extraData;
+        $payment = $this->paymentRepository->find($paymentId);
+
+        if (!$payment) {
+            return $this->sendResponseApi([
+                'code' => 404,
+                'message' => 'Giao dịch không tồn tại',
+            ]);
+        }
+
+        if ($resultCode == '0') {
+            $this->paymentRepository->update($paymentId,['trangthai'=> "Đã thanh toán"]);
+        } else {
+            $this->paymentRepository->update($paymentId,['trangthai'=> "Thanh toán thất bại"]);
+        }
+
+
+        return response()->json([
+            'code' => 200,
+            'message' => $resultCode == '0' ? 'Thanh toán thành công' : 'Thanh toán thất bại',
+            'data' => $data,
+        ]);
     }
 
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            'giatri' => 'required|numeric',
+            'pttt' => 'required|string',
+            'trangthai' => 'string',
+            'mabooking' => 'required',
+            'makh' => 'required',
+        ], [
+            'giatri.required' => 'Giá trị là bắt buộc.',
+            'giatri.numeric' => 'Giá trị phải là số.',
+            'pttt.required' => 'Phương thức thanh toán là bắt buộc.',
+            'pttt.string' => 'Phương thức thanh toán phải là chuỗi.',
+            'trangthai.required' => 'Trạng thái là bắt buộc.',
+            'trangthai.string' => 'Trạng thái phải là chuỗi.',
+            'makh.required' => 'Mã khách hàng là bắt buộc.',
         ]);
 
         if ($validator->fails()) {
@@ -135,13 +194,10 @@ class PaymentController extends Controller
                 'error' => $validator->errors()->all()
             ]);
         }
-        if($request->pttt=="Tiền mặt"){
-            $request->trangthai= "Chưa thanh toán";
-        }
         $input = [
             'giatri' => $request->giatri,
             'pttt' => $request->pttt,
-            'trangthai' => $request->trangthai,
+            'trangthai' => "Chưa thanh toán",
             'mabooking' => $request->mabooking,
             'makh' => $request->makh,
         ];

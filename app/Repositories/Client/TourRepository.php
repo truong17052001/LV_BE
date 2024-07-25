@@ -28,17 +28,17 @@ class TourRepository extends Base
     public function getList(array $input, int $page = null, int $limit = null, array $columns = ['*'])
     {
         $query = $this->allQuery();
-           
+
         if (!empty($input['tieude'])) {
             $query->where('tieude', 'like', '%' . $input['tieude'] . '%');
         }
-    
+
         if (!empty($input['diemden'])) {
             $query->whereHas('place', function ($query) use ($input) {
                 $query->where('madd', $input['diemden']);
             });
         }
-    
+
         if (!empty($input['ngaydi'])) {
             $query->whereHas('dateGo', function ($query) use ($input) {
                 $query->whereDate('ngay', $input['ngaydi']);
@@ -53,14 +53,22 @@ class TourRepository extends Base
 
         if (!empty($input['songuoi'])) {
             $query->whereHas('dateGo', function ($query) use ($input) {
-                $query->where('chongoi', $input['songuoi']);
+                $query->where('chongoi', '>=', $input['songuoi']);
             });
         }
 
         if (!empty($input['giamin']) && !empty($input['giamax'])) {
-            $query->where('gia_a', '<=', $input['giamax'])
-                    ->where('gia_a', '>=', $input['giamin']);
+            $query->where('gia_a', '>=', $input['giamin'])
+                ->where('gia_a', '<=', $input['giamax']);
+        } elseif (!empty($input['giamin'])) {
+            $query->where('gia_a', '>=', $input['giamin']);
+        } elseif (!empty($input['giamax'])) {
+            $query->where('gia_a', '<=', $input['giamax']);
         }
+
+        // $query->whereHas('dateGo', function ($query) use ($input) {
+        //     $query->where('chongoi', '>=', 0);
+        // });
 
         return $query->select(['id', 'matour', 'tieude', 'noikh', 'gia_a', 'gia_c', 'anh', 'trangthai'])
             ->orderBy('id', 'asc')->paginate($limit, $columns, 'page', $page);
@@ -92,6 +100,4 @@ class TourRepository extends Base
             });
         return $query->find($id);
     }
-    
-    
 }

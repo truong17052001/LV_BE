@@ -24,7 +24,6 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        // dd($request->all());
         try {
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|exists:users,email",
@@ -69,7 +68,12 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-
+                "moi" => "required|min:7",
+                "cu" => "required|min:7",
+            ], [
+                'moi.required' => 'Mật khẩu cũ là bắt buộc.',
+                'moi.min' => 'Email không hợp lệ.',
+                
             ]);
 
             if ($validator->fails()) {
@@ -122,7 +126,6 @@ class AuthController extends Controller
                 ]);
             }
 
-            $input['ten'] = "Chờ cập nhật";
             $input['matkhau'] = Hash::make($input['matkhau']);
             $input['ngaysinh'] = date('ymdHis');
             $input['dakichhoat'] = 0;
@@ -165,10 +168,43 @@ class AuthController extends Controller
             'data' => $auth,
         ]);
     }
+
+    public function booking($id)
+    {
+        $auth = $this->authRepository->getOrdered($id);
+
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $auth,
+        ]);
+    }
+
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            'ten' => 'required|string|max:255',
+            'email' => 'required|email',
+            'sdt' => 'required|digits:10|regex:/^[0-9]+$/',
+            'gioitinh' => 'required|string',
+            'diachi' => 'required|string|max:255',
+            'ngaysinh' => 'required|date',
+            'anh' => 'nullable',
+        ], [
+            'ten.required' => 'Tên là bắt buộc.',
+            'ten.string' => 'Tên phải là chuỗi.',
+            'ten.max' => 'Tên không được vượt quá 255 ký tự.',
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không hợp lệ.',
+            'sdt.required' => 'Số điện thoại là bắt buộc.',
+            'sdt.digits' => 'Số điện thoại phải có đúng 10 chữ số.',
+            'sdt.regex' => 'Số điện thoại chỉ được chứa các chữ số.',
+            'gioitinh.required' => 'Giới tính là bắt buộc.',
+            'gioitinh.string' => 'Giới tính phải là chuỗi.',
+            'diachi.required' => 'Địa chỉ là bắt buộc.',
+            'diachi.string' => 'Địa chỉ phải là chuỗi.',
+            'diachi.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'ngaysinh.required' => 'Ngày sinh là bắt buộc.',
+            'ngaysinh.date' => 'Ngày sinh không hợp lệ.',
         ]);
 
         if ($validator->fails()) {

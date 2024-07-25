@@ -10,6 +10,7 @@ class PlaceRepository extends Base{
         'ten',
         'mota',
         'trangthai',
+        'anh'
     ];
 
     public function getFieldSearchable(): array {

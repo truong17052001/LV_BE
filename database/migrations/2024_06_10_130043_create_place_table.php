@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('place', function (Blueprint $table) {
             $table->id();
             $table->string('ten');
+            $table->text('anh');
             $table->text('mota');
             $table->string('trangthai');
             $table->timestamps();

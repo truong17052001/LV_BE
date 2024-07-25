@@ -43,7 +43,8 @@ class VehicleController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "ten" => "required",
+            "loai" => "required",
         ]);
 
         if ($validator->fails()) {

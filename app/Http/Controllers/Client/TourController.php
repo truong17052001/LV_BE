@@ -74,7 +74,7 @@ class TourController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            
         ]);
         if ($validator->fails()) {
             return $this->sendResponseApi([

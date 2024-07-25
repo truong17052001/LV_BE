@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('makh');
             $table->timestamps();
             $table->foreign('mabooking')->references('id')->on('booking');
-            $table->foreign('makh')->references('id')->on('customer');
+            $table->foreign('makh')->references('id')->on('users');
         });
     }
 

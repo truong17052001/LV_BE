@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -48,4 +49,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'makh');
+    }
+
+    public function tours()
+    {
+        return $this->hasManyThrough(
+            Tour::class,
+            Booking::class,
+            'makh', 
+            'id',
+            'id',
+            'mand'
+        )->join('date_go', 'date_go.id', '=', 'booking.mand')
+          ->select('tour.*');
+    }
 }

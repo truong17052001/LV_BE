@@ -62,7 +62,7 @@ abstract class Base
     {
         $query = $this->model->newQuery();
 
-        return $query->find($id, $columns);
+        return $query->find($id);
     }
 
     public function findByColumns(array $conditions, array $columns = ['*'])

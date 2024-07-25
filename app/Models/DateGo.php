@@ -21,7 +21,10 @@ class DateGo extends Model
         'matour',
         'mahdv',
     ];
-
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'mand');
+    }
     public function tour(): BelongsTo
     {
         return $this->belongsTo(Tour::class, 'matour');

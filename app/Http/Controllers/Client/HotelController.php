@@ -43,7 +43,7 @@ class HotelController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "email" => "required|email|unique:hotel",
         ]);
 
         if ($validator->fails()) {
@@ -75,7 +75,7 @@ class HotelController extends Controller
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "email" => "required|email|unique:hotel",
         ]);
 
         if ($validator->fails()) {

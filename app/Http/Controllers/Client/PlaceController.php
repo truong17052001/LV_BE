@@ -43,7 +43,15 @@ class PlaceController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "ten" => "required",
+            "mota" => "required",
+            "trangthai" => "required",
+            "anh" => "required",
+        ], [
+            'ten.required' => 'Tên địa danh là bắt buộc.',
+            'mota.required' => 'Mô tả địa danh là bắt buộc.',
+            'trangthai.required' => 'Trạng thái là bắt buộc.',
+            'anh.required' => 'Ảnh là bắt buộc.',
         ]);
 
         if ($validator->fails()) {
@@ -57,6 +65,7 @@ class PlaceController extends Controller
             'ten' => $request->ten,
             'mota' => $request->mota,
             'trangthai' => $request->trangthai,
+            'anh' => $request->anh,
         ];
 
         $this->placeRepository->create(
@@ -71,7 +80,15 @@ class PlaceController extends Controller
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "ten" => "required",
+            "mota" => "required",
+            "trangthai" => "required",
+            "anh" => "required",
+        ], [
+            'ten.required' => 'Tên địa danh là bắt buộc.',
+            'mota.required' => 'Mô tả địa danh là bắt buộc.',
+            'trangthai.required' => 'Trạng thái là bắt buộc.',
+            'anh.required' => 'Ảnh là bắt buộc.',
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +102,7 @@ class PlaceController extends Controller
             'ten' => $request->ten,
             'mota' => $request->mota,
             'trangthai' => $request->trangthai,
+            'anh' => $request->anh,
         ];
 
         $this->placeRepository->update(

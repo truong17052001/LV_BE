@@ -16,5 +16,6 @@ class Place extends Model
         'ten',
         'mota',
         'trangthai',
+        'anh'
     ];
 }
