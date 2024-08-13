@@ -29,5 +29,8 @@ class DateGo extends Model
     {
         return $this->belongsTo(Tour::class, 'matour');
     }
-
+    public function guider(): BelongsTo
+    {
+        return $this->belongsTo(TourGuider::class, 'mahdv');
+    }
 }

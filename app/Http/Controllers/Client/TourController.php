@@ -38,10 +38,10 @@ class TourController extends Controller
             'tieude' => $request->get('tieude'),
             'diemden' => (int) $request->get('diemden'),
             'ngaydi' => $request->get('ngaydi'),
-            'giamin' => (int)$request->get('giamin'),
-            'giamax' => (int)$request->get('giamax'),
-            'songuoi' => (int)$request->get('songuoi'),
-            'songay' => (int)$request->get('songay'),
+            'giamin' => (int) $request->get('giamin'),
+            'giamax' => (int) $request->get('giamax'),
+            'songuoi' => (int) $request->get('songuoi'),
+            'songay' => (int) $request->get('songay'),
         ];
         $tours = $this->tourRepository->getList(
             $input,
@@ -74,7 +74,21 @@ class TourController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            
+            "matour" => "required",
+            "tieude" => "required",
+            "noikh" => "required",
+            "gia_a" => "required",
+            "gia_c" => "required",
+            "anh" => "required",
+            "trangthai" => "required",
+        ], [
+            'matour.required' => 'Mã tour là bắt buộc.',
+            'tieude.required' => 'Tiêu đề là bắt buộc.',
+            'noikh.required' => 'Nơi khởi hành là bắt buộc.',
+            'gia_a.required' => 'Giá người lớn là bắt buộc.',
+            'gia_c.required' => 'Giá trẻ em là bắt buộc.',
+            'anh.required' => 'Ảnh là bắt buộc.',
+            'trangthai.required' => 'Trạng thái là bắt buộc.',
         ]);
         if ($validator->fails()) {
             return $this->sendResponseApi([
@@ -106,15 +120,15 @@ class TourController extends Controller
                 $vehicle
             );
         }
-        foreach ($request['hotels'] as $detail) {
-            $hotel = [
-                'maks' => $detail,
-                'matour' => $tour->id,
-            ];
-            $this->tourHotelRepository->create(
-                $hotel
-            );
-        }
+        // foreach ($request['hotels'] as $detail) {
+        //     $hotel = [
+        //         'maks' => $detail,
+        //         'matour' => $tour->id,
+        //     ];
+        //     $this->tourHotelRepository->create(
+        //         $hotel
+        //     );
+        // }
         foreach ($request['places'] as $detail) {
             $place = [
                 'madd' => $detail,
@@ -141,7 +155,21 @@ class TourController extends Controller
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "matour" => "required",
+            "tieude" => "required",
+            "noikh" => "required",
+            "gia_a" => "required",
+            "gia_c" => "required",
+            "anh" => "required",
+            "trangthai" => "required",
+        ], [
+            'matour.required' => 'Mã tour là bắt buộc.',
+            'tieude.required' => 'Tiêu đề là bắt buộc.',
+            'noikh.required' => 'Nơi khởi hành là bắt buộc.',
+            'gia_a.required' => 'Giá người lớn là bắt buộc.',
+            'gia_c.required' => 'Giá trẻ em là bắt buộc.',
+            'anh.required' => 'Ảnh là bắt buộc.',
+            'trangthai.required' => 'Trạng thái là bắt buộc.',
         ]);
 
         if ($validator->fails()) {
@@ -185,7 +213,7 @@ class TourController extends Controller
                 'maks' => $detail,
                 'matour' => $tour->id,
             ];
-            
+
             $this->tourHotelRepository->create(
                 $hotel
             );

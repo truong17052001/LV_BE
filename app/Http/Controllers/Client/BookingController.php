@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Client\BookingRepository;
 use App\Repositories\Client\DetailBookingRepository;
 use App\Repositories\Client\DateRepository;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Mail\ThankYouInvoiceMail;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -17,7 +20,8 @@ class BookingController extends Controller
     private DateRepository $dateRepository;
 
 
-    public function __construct(BookingRepository $bookingRepo, DetailBookingRepository $detailBookingRepo,DateRepository $dateRepo)
+
+    public function __construct(BookingRepository $bookingRepo, DetailBookingRepository $detailBookingRepo, DateRepository $dateRepo)
     {
         $this->bookingRepository = $bookingRepo;
         $this->detailBookingRepository = $detailBookingRepo;
@@ -58,6 +62,8 @@ class BookingController extends Controller
             'mand' => 'required|integer',
             'makh' => 'required|integer',
             'magg' => 'nullable|integer',
+            // 'detailBooking.adults' => 'required',
+            // 'detailBooking.childrens' => 'required', 
             'detailBooking.adults.*.ten' => 'required|string|max:255',
             'detailBooking.adults.*.gioitinh' => 'required|string',
             'detailBooking.adults.*.ngaysinh' => 'required|date',
@@ -84,6 +90,8 @@ class BookingController extends Controller
             'mand.required' => 'Mã ngày đi là bắt buộc.',
             'mand.integer' => 'Mã ngày đi phải là số nguyên.',
             'makh.required' => 'Mã khách hàng là bắt buộc.',
+            // 'detailBooking.adults.required' => 'Vui lòng nhập đầy đủ thông tin.',
+            // 'detailBooking.childrens.required' => 'Vui lòng nhập đầy đủ thông tin.',
             'detailBooking.adults.*.ten.required' => 'Tên của người lớn là bắt buộc.',
             'detailBooking.adults.*.ten.string' => 'Tên của người lớn phải là chuỗi.',
             'detailBooking.adults.*.ten.max' => 'Tên của người lớn không được vượt quá 255 ký tự.',
@@ -99,18 +107,21 @@ class BookingController extends Controller
             'detailBooking.childrens.*.ngaysinh.required' => 'Ngày sinh của trẻ em là bắt buộc.',
             'detailBooking.childrens.*.ngaysinh.date' => 'Ngày sinh của trẻ em không hợp lệ.',
         ]);
-        $date = $this->dateRepository->getDetail(
-            $request->mand
-        );
-        
-        $tongtien = $request->nguoilon * $date['tour']['gia_a'] + $request->treem * $date['tour']['gia_c'];
-        $date = date('ymdHis');
+
         if ($validator->fails()) {
             return $this->sendResponseApi([
                 'code' => '400',
                 'error' => $validator->errors()->all()
             ]);
         }
+        
+        $date = $this->dateRepository->getDetail(
+            $request->mand
+        );
+
+        $tongtien = $request->nguoilon * $date['tour']['gia_a'] + $request->treem * $date['tour']['gia_c'] - $request->giatrigiamgia;
+
+        $date = date('ymdHis');
 
         $booking = [
             'sobooking' => $date,
@@ -130,43 +141,52 @@ class BookingController extends Controller
             $booking
         );
 
+        $this->sendThankYouEmail($booking);
+
         $date = $this->dateRepository->find(
             $request->mand,
         );
 
-        $date['chongoi'] = $date['chongoi'] -1;
+        $date['chongoi'] = $date['chongoi'] - $request->nguoilon - $request->treem;
         $input = ['chongoi' => $date->chongoi];
+
         $this->dateRepository->update(
             $request->mand,
             $input
         );
         $detailList = $request->detailBooking;
-        foreach ($detailList['adults'] as $detail) {
-            $detailBooking = [
-                'ten' => $detail['ten'],
-                'gioitinh' => $detail['gioitinh'],
-                'ngaysinh' => $detail['ngaysinh'],
-                'loai' => 1,
-                'mabooking' => $booking['id'],
-            ];
-            $this->detailBookingRepository->create(
-                $detailBooking
-            );
-        }
+        if ($detailList != null) {
+            foreach ($detailList['adults'] as $detail) {
+                $detailBooking = [
+                    'ten' => $detail['ten'],
+                    'gioitinh' => $detail['gioitinh'],
+                    'ngaysinh' => $detail['ngaysinh'],
+                    'loai' => 1,
+                    'mabooking' => $booking['id'],
+                ];
+                $this->detailBookingRepository->create(
+                    $detailBooking
+                );
+            }
 
-        foreach ($detailList['childrens'] as $detail) {
-            $detailBookings = [
-                'ten' => $detail['ten'],
-                'gioitinh' => $detail['gioitinh'],
-                'ngaysinh' => $detail['ngaysinh'],
-                'loai' => 0,
-                'mabooking' => $booking['id'],
-            ];
-            $this->detailBookingRepository->create(
-                $detailBookings
-            );
+            foreach ($detailList['childrens'] as $detail) {
+                $detailBookings = [
+                    'ten' => $detail['ten'],
+                    'gioitinh' => $detail['gioitinh'],
+                    'ngaysinh' => $detail['ngaysinh'],
+                    'loai' => 0,
+                    'mabooking' => $booking['id'],
+                ];
+                $this->detailBookingRepository->create(
+                    $detailBookings
+                );
+            }
+        }else{
+            return $this->sendResponseApi([
+                'code' => '400',
+                'error' => ["Vui lòng nhập đầy đủ thông tin"]
+            ]);
         }
-
 
         return $this->sendResponseApi([
             'code' => 200,
@@ -181,7 +201,7 @@ class BookingController extends Controller
             'ngay' => 'required|date',
             'trangthai' => 'required|string',
             'ten' => 'required|string|max:255',
-            'sdt' => 'required|numeric|size:10',
+            'sdt' => 'required|digits:10|regex:/^[0-9]+$/',
             'diachi' => 'required|string|max:255',
             'tongtien' => 'required|numeric',
             'mand' => 'required|integer',
@@ -205,7 +225,8 @@ class BookingController extends Controller
             'ten.string' => 'Tên phải là chuỗi.',
             'ten.max' => 'Tên không được vượt quá 255 ký tự.',
             'sdt.required' => 'Số điện thoại là bắt buộc.',
-            'sdt.size' => 'Số điện thoại phải có độ dài 10 ký tự.',
+            'sdt.digits' => 'Số điện thoại phải có đúng 10 chữ số.',
+            'sdt.regex' => 'Số điện thoại phải là số.',
             'diachi.required' => 'Địa chỉ là bắt buộc.',
             'diachi.string' => 'Địa chỉ phải là chuỗi.',
             'diachi.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
@@ -270,6 +291,48 @@ class BookingController extends Controller
         ]);
     }
 
-    
+    public function downloadPDF($id, Request $request)
+    {
+        $booking = $this->bookingRepository->getDetail(
+            $id,
+        );
+        $date = $this->dateRepository->getDetail($booking->mand);
+        $input = [
+            'sobooking' => $booking->sobooking,
+            'ten' => $booking->ten,
+            'thanhtien' => $booking->tongtien,
+            'ngay' => $booking->ngay,
+            'detail' => $booking->detail,
+            'payment' => $booking->detail_payment,
+            'songaydi' => $date->songaydi,
+            'ngaydi' => $date->ngay,
+            'tieude' => $date->tour->tieude,
+            'matour' => $date->tour->matour,
+            'noikh' => $date->tour->noikh,
+            'gianl' => $date->tour->gia_a,
+            'giate' => $date->tour->gia_c,
+            'tenhdv' => $date->guider->ten,
+            'sdt' => $date->guider->sdt,
+            'email' => $date->guider->email,
+
+        ];
+
+        $pdf = Pdf::loadView('invoice', ['details' => $input]);
+
+        return $pdf->download('invoice.pdf');
+    }
+
+    public function sendThankYouEmail($request)
+    {
+        $details = [
+            'ten' => $request->ten,
+            'sobooking' => $request->sobooking,
+            'tongtien' => $request->tongtien,
+            'ngay' => $request->ngay
+        ];
+        Mail::to($request->email)->send(new ThankYouInvoiceMail($details));
+
+        return response()->json(['message' => 'Email sent successfully']);
+    }
 
 }

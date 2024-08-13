@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('mabooking');
             $table->unsignedBigInteger('makh');
             $table->timestamps();
-            $table->foreign('mabooking')->references('id')->on('booking');
-            $table->foreign('makh')->references('id')->on('users');
+            $table->foreign('mabooking')->references('id')->on('booking')->onDelete('restrict');
+            $table->foreign('makh')->references('id')->on('users')->onDelete('restrict');
         });
     }
 

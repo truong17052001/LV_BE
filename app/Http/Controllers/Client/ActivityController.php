@@ -29,6 +29,15 @@ class ActivityController extends Controller
         ]);
     }
 
+    public function detail($id)
+    {
+        $activity = $this->activityRepository->find($id);
+
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $activity,
+        ]);
+    }
 
     public function create(Request $request)
     {
@@ -49,7 +58,6 @@ class ActivityController extends Controller
             'stt' => $request->stt,
             'ngay' => $request->ngay,
             'mota' => $request->mota,
-     
         ];
 
         $this->activityRepository->create(

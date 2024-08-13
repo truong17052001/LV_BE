@@ -28,6 +28,12 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|exists:users,email",
                 "matkhau" => "required|min:7"
+            ], [
+                'email.required' => 'Email là bắt buộc.',
+                'email.email' => 'Email không hợp lệ.',
+                'email.exists' => 'Email không tồn tại.',
+                'matkhau.required' => 'Mật khẩu là bắt buộc',
+                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',                
             ]);
 
             if ($validator->fails()) {
@@ -41,7 +47,7 @@ class AuthController extends Controller
             if (empty($user) || !Hash::check($request['matkhau'], $user->matkhau)) {
                 return $this->sendResponseApi([
                     'code' => 401,
-                    'error' => 'Invalid Login'
+                    'error' => 'Sai mật khẩu vui lòng nhập lại'
                 ]);
             } else {
                 $token = $user->createToken($request->email)->plainTextToken;
@@ -71,9 +77,10 @@ class AuthController extends Controller
                 "moi" => "required|min:7",
                 "cu" => "required|min:7",
             ], [
-                'moi.required' => 'Mật khẩu cũ là bắt buộc.',
-                'moi.min' => 'Email không hợp lệ.',
-                
+                'moi.required' => 'Mật khẩu mới là bắt buộc.',
+                'moi.min' => 'Mật khẩu mới phải có ít nhất 7 ký tự.',
+                'cu.required' => 'Mật khẩu cũ là bắt buộc.',
+                'cu.min' => 'Mật khẩu cũ phải có ít nhất 7 ký tự.',
             ]);
 
             if ($validator->fails()) {
@@ -89,7 +96,7 @@ class AuthController extends Controller
             if (empty($user) || !Hash::check($request['cu'], $user->matkhau)) {
                 return $this->sendResponseApi([
                     'code' => 401,
-                    'error' => 'Invalid Login'
+                    'error' => 'Mật khẩu cũ không chính xác'
                 ]);
             } else {
                 $this->authRepository->update($id, $input);
@@ -117,6 +124,12 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|unique:users",
                 "matkhau" => "required|min:7"
+            ],[
+                'email.required' => 'Email là bắt buộc.',
+                'email.email' => 'Email không hợp lệ.',
+                'email.unique' => 'Email đã tồn tại.',
+                'matkhau.required' => 'Mật khẩu là bắt buộc',
+                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',                
             ]);
 
             if ($validator->fails()) {
@@ -128,6 +141,7 @@ class AuthController extends Controller
 
             $input['matkhau'] = Hash::make($input['matkhau']);
             $input['ngaysinh'] = date('ymdHis');
+            $input['quyen'] = "Khách hàng";
             $input['dakichhoat'] = 0;
 
             $user = $this->authRepository->create($input);

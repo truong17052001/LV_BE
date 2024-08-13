@@ -41,6 +41,16 @@ class DiscountController extends Controller
         ]);
     }
 
+    public function applyDiscount($ma)
+    {
+        $discount = $this->discountRepository->findByColumns(['magiamgia' => $ma]);
+
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $discount,
+        ]);
+    }
+
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [

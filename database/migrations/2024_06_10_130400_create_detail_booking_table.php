@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('loai');
             $table->unsignedBigInteger('mabooking');
             $table->timestamps();
-            $table->foreign('mabooking')->references('id')->on('booking');
+            $table->foreign('mabooking')->references('id')->on('booking')->onDelete('restrict');
         });
     }
 

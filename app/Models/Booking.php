@@ -31,5 +31,9 @@ class Booking extends Model
         return $this->hasMany(DetailBooking::class, 'mabooking');
     }
 
+    public function detailPayment(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'mabooking');
+    }
     
 }

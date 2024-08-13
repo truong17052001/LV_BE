@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('tieude');
             $table->text('mota');
             $table->timestamps();
-            $table->foreign('matour')->references('id')->on('tour');
+            $table->foreign('matour')->references('id')->on('tour')->onDelete('restrict');
         });
     }
 

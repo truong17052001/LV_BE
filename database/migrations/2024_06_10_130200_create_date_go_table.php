@@ -20,8 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('matour');
             $table->unsignedBigInteger('mahdv');
             $table->timestamps();
-            $table->foreign('mahdv')->references('id')->on('tour_guider');
-            $table->foreign('matour')->references('id')->on('tour');
+            $table->foreign('mahdv')->references('id')->on('tour_guider')->onDelete('restrict');
+            $table->foreign('matour')->references('id')->on('tour')->onDelete('restrict');
         });
     }
 

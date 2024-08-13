@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('otp');
             $table->timestamp('expired_at');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('user');
+            $table->foreign('user_id')->references('id')->on('user')->onDelete('restrict');
         });
     }
 

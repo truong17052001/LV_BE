@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Client\paymentRepository;
+use App\Repositories\Client\PaymentRepository;
+use App\Repositories\Client\BookingRepository;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
     private PaymentRepository $paymentRepository;
+    private BookingRepository $bookingRepository;
 
-    public function __construct(PaymentRepository $paymentRepo)
+
+    public function __construct(PaymentRepository $paymentRepo, BookingRepository $bookingRepo)
     {
         $this->paymentRepository = $paymentRepo;
+        $this->bookingRepository = $bookingRepo;
     }
 
     public function index(Request $request)
@@ -32,7 +37,8 @@ class PaymentController extends Controller
 
     public function detail($id)
     {
-        $payment = $this->paymentRepository->find($id);
+
+        $payment = $this->paymentRepository->findAllByColumns(['mabooking' => $id]);
 
         return $this->sendResponseApi([
             'code' => 200,
@@ -87,14 +93,14 @@ class PaymentController extends Controller
 
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
-        $partnerCode = env('MOMO_PARTNER_CODE', 'default_partner_code');
-        $accessKey = env('MOMO_ACCESS_KEY', 'default_access_key');
-        $secretKey = env('MOMO_SECRET_KEY', 'default_secret_key');
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
         $amount = $request->giatri;
-        $orderId = time();
-        $redirectUrl = 'http://localhost:5173/';
-        $ipnUrl = 'http://localhost:5173/';
+        $orderId = time() . "";
+        $redirectUrl = "http://localhost:5173/";
+        $ipnUrl = "http://localhost:5173/";
         $extraData = $payment->id;
 
         $requestId = time();
@@ -119,7 +125,6 @@ class PaymentController extends Controller
             'requestType' => $requestType,
             'signature' => $signature,
         ];
-
         try {
             $result = $this->execPostRequest($endpoint, json_encode($data));
             $jsonResult = json_decode($result, true);
@@ -140,6 +145,7 @@ class PaymentController extends Controller
         }
     }
 
+
     public function momoCallback(Request $request)
     {
         $data = $request->all();
@@ -157,11 +163,12 @@ class PaymentController extends Controller
         }
 
         if ($resultCode == '0') {
-            $this->paymentRepository->update($paymentId,['trangthai'=> "Đã thanh toán"]);
+            $this->paymentRepository->update($paymentId, ['trangthai' => "Đã thanh toán"]);
+            $this->bookingRepository->update($payment->mabooking, ['trangthai' => "Chờ xác nhận"]);
         } else {
-            $this->paymentRepository->update($paymentId,['trangthai'=> "Thanh toán thất bại"]);
+            $this->paymentRepository->update($paymentId, ['trangthai' => "Thanh toán thất bại"]);
+            $this->bookingRepository->update($payment->mabooking, ['trangthai' => "Đã hủy"]);
         }
-
 
         return response()->json([
             'code' => 200,
@@ -241,6 +248,21 @@ class PaymentController extends Controller
             'code' => 200,
         ]);
     }
+
+    public function paid($id, Request $request)
+    {
+        $payment = $this->paymentRepository->update(
+            $id,
+            ['trangthai' => "Đã thanh toán"]
+        );
+        $this->bookingRepository->update($payment->mabooking, ['trangthai' => "Chờ xác nhận"]);
+
+        return $this->sendResponseApi([
+            'code' => 200,
+            'data' => $payment
+        ]);
+    }
+
     public function delete($id)
     {
         $this->paymentRepository->delete(

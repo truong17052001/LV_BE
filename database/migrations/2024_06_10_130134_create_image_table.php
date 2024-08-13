@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('matour');
             $table->text('nguon');
             $table->timestamps();
-            $table->foreign('matour')->references('id')->on('tour');
+            $table->foreign('matour')->references('id')->on('tour')->onDelete('restrict');
         });
     }
 

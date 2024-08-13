@@ -75,6 +75,16 @@ abstract class Base
         return $query->first($columns);
     }
 
+    public function findAllByColumns(array $conditions, array $columns = ['*'])
+    {
+        $query = $this->model->newQuery();
+        foreach ($conditions as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        return $query->get($columns);
+    }
+
     public function update(int $id, array $input)
     {
         $query = $this->model->newQuery();

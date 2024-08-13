@@ -42,9 +42,26 @@ class HotelController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email|unique:hotel",
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "email" => "required|email",
+                "ten" => "required",
+                "sdt" => "required",
+                "diachi" => "required",
+                "website" => "required",
+                "tieuchuan" => "required",
+            ],
+            [
+                'email.required' => 'Email là bắt buộc.',
+                'email.email' => 'Email sai định dạng.',
+                'ten.required' => 'Tên là bắt buộc.',
+                'sdt.required' => 'Số điện thoại là bắt buộc.',
+                'diachi.required' => 'Địa chỉ là bắt buộc.',
+                'website.required' => 'Website là bắt buộc.',
+                'tieuchuan.required' => 'Tiêu chuẩn là bắt buộc.',
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->sendResponseApi([
@@ -60,7 +77,7 @@ class HotelController extends Controller
             'email' => $request->email,
             'website' => $request->website,
             'tieuchuan' => $request->tieuchuan,
-       
+
         ];
 
         $this->hotelRepository->create(
@@ -74,9 +91,26 @@ class HotelController extends Controller
 
     public function edit($id, Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email|unique:hotel",
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "email" => "required|email",
+                "ten" => "required",
+                "sdt" => "required",
+                "diachi" => "required",
+                "website" => "required",
+                "tieuchuan" => "required",
+            ],
+            [
+                'email.required' => 'Email là bắt buộc.',
+                'email.email' => 'Email sai định dạng.',
+                'ten.required' => 'Tên là bắt buộc.',
+                'sdt.required' => 'Số điện thoại là bắt buộc.',
+                'diachi.required' => 'Địa chỉ là bắt buộc.',
+                'website.required' => 'Website là bắt buộc.',
+                'tieuchuan.required' => 'Tiêu chuẩn là bắt buộc.',
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->sendResponseApi([

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('matour');
             $table->unsignedBigInteger('madd');
             $table->timestamps();
-            $table->foreign('madd')->references('id')->on('place');
-            $table->foreign('matour')->references('id')->on('tour');
+            $table->foreign('madd')->references('id')->on('place')->onDelete('restrict');
+            $table->foreign('matour')->references('id')->on('tour')->onDelete('restrict');
         });
     }
 

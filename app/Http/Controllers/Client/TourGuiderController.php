@@ -31,7 +31,7 @@ class TourGuiderController extends Controller
     public function detail(Request $request)
     {
         $guider = $this->tourGuiderRepository->find(
-           $request->id,
+            $request->id,
         );
         return $this->sendResponseApi([
             'code' => 200,
@@ -41,7 +41,18 @@ class TourGuiderController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-
+            "email" => "required|email",
+            "ten" => "required",
+            "sdt" => "required",
+            "diachi" => "required",
+            "anh" => "required",
+        ], [
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không hợp lệ.',
+            'diachi.required' => 'Địa chỉ là bắt buộc',
+            'sdt.required' => 'Số điện thoại là bắt buộc',
+            'ten.required' => 'Tên là bắt buộc',
+            'anh.required' => 'Ảnh là bắt buộc',
         ]);
 
         if ($validator->fails()) {
@@ -71,10 +82,18 @@ class TourGuiderController extends Controller
     public function edit($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "email" => "required|email|unique:tour_guider",
+            "email" => "required|email",
             "ten" => "required",
+            "sdt" => "required",
             "diachi" => "required",
-
+            "anh" => "required",
+        ], [
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không hợp lệ.',
+            'diachi.required' => 'Địa chỉ là bắt buộc',
+            'sdt.required' => 'Số điện thoại là bắt buộc',
+            'ten.required' => 'Tên là bắt buộc',
+            'anh.required' => 'Ảnh là bắt buộc',
         ]);
 
         if ($validator->fails()) {

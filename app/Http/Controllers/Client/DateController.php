@@ -122,29 +122,13 @@ class DateController extends Controller
             return $booking->detail;
         });
         
-        // Apply filters
-        if ($request->has('name')) {
-            $customers = $customers->filter(function ($customer) use ($request) {
-                return str_contains($customer->ten, $request->name);
-            });
-        }
-        if ($request->has('gender')) {
-            $customers = $customers->filter(function ($customer) use ($request) {
-                return $customer->gioitinh === $request->gender;
-            });
-        }
-        if ($request->has('birthdate')) {
-            $customers = $customers->filter(function ($customer) use ($request) {
-                return $customer->ngaysinh === $request->birthdate;
-            });
-        }
-        
         $filename = 'customers.xlsx';
-        $headers = ['ID', 'Name', 'Gender', 'Birthdate', 'Adult'];
+        $headers = ['Mã', 'Họ tên', 'Giới tính', 'Ngày sinh', 'Người lớn'];
         
         $excelData = $customers->map(function ($customer) {
-            return [$customer->id, $customer->ten, $customer->gioitinh, $customer->ngaysinh,$customer->loai];
-        })->toArray(); // Ensure data is converted to array
+            return [$customer->id, $customer->ten, $customer->gioitinh, $customer->ngaysinh,$customer->loai == 1 ? 'x' : $customer->loai
+        ];
+        })->toArray(); 
 
         return Excel::download(new class ($headers, $excelData) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
             protected $headers;

@@ -70,7 +70,9 @@ class TourRepository extends Base
         //     $query->where('chongoi', '>=', 0);
         // });
 
-        return $query->select(['id', 'matour', 'tieude', 'noikh', 'gia_a', 'gia_c', 'anh', 'trangthai'])
+        return $query->select(['id', 'matour', 'tieude', 'noikh', 'gia_a', 'gia_c', 'anh', 'trangthai'])->with('dateGo', function ($query) {
+            $query->select(['id', 'ngay', 'thang', 'songaydi', 'chongoi', 'matour', 'mahdv']);
+        })
             ->orderBy('id', 'asc')->paginate($limit, $columns, 'page', $page);
     }
 
@@ -84,7 +86,7 @@ class TourRepository extends Base
                 $query->select(['id', 'ngay', 'thang', 'songaydi', 'chongoi', 'matour', 'mahdv']);
             })
             ->with('tourGuide', function ($query) {
-                $query->select(['ten', 'sdt', 'email', 'anh']);
+                $query->select(['ten', 'sdt', 'email', 'anh', 'diachi']);
             })
             ->with('activities', function ($query) {
                 $query->select(['matour', 'stt', 'ngay', 'tieude', 'mota']);

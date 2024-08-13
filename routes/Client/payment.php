@@ -11,6 +11,8 @@ Route::prefix('payment')->group(function () {
         Route::get('/{id}', 'detail')->name('detail');
         Route::post('/add', 'create')->name('create');
         Route::put('/edit/{id}', 'edit')->name('edit');
+        Route::put('/paid/{id}', 'paid')->name('paid');
         Route::delete('/delete/{id}', 'delete')->name('delete');
+        Route::post('/email', 'sendThankYouEmail')->name('sendThankYouEmail');
     });
 });;

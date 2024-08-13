@@ -45,8 +45,15 @@ class BookingRepository extends Base
                     );
                 }
             ])
-            ->find($id);
+            ->with([
+                'detailPayment' => function ($query) {
+                    $query->select(
+                        '*',
+                    );
+                }
+            ])
+        ;
 
-        return $query;
+        return $query->find($id);
     }
 }

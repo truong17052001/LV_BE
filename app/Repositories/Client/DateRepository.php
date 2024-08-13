@@ -35,6 +35,11 @@ class DateRepository extends Base
                     $query->select('id', 'tieude', 'anh', 'gia_a', 'gia_c', 'matour','noikh');
                 }
             ])
+            ->with([
+                'guider' => function ($query) {
+                    $query->select('*');
+                }
+            ])
             ->find($id);
 
         return $query;
