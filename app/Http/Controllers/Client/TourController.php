@@ -120,15 +120,15 @@ class TourController extends Controller
                 $vehicle
             );
         }
-        // foreach ($request['hotels'] as $detail) {
-        //     $hotel = [
-        //         'maks' => $detail,
-        //         'matour' => $tour->id,
-        //     ];
-        //     $this->tourHotelRepository->create(
-        //         $hotel
-        //     );
-        // }
+        foreach ($request['hotels'] as $detail) {
+            $hotel = [
+                'maks' => $detail,
+                'matour' => $tour->id,
+            ];
+            $this->tourHotelRepository->create(
+                $hotel
+            );
+        }
         foreach ($request['places'] as $detail) {
             $place = [
                 'madd' => $detail,
@@ -248,12 +248,19 @@ class TourController extends Controller
     }
     public function delete($id)
     {
-        $this->tourRepository->delete(
-            $id,
-        );
-
-        return $this->sendResponseApi([
-            'code' => 200,
-        ]);
+        $id_temp = $this->tourRepository->find($id)->dateGo;
+        if (count($id_temp) <= 0) {
+            $this->tourRepository->delete(
+                $id,
+            );
+            return $this->sendResponseApi([
+                'code' => 200,
+            ]);
+        } else {
+            return $this->sendResponseApi([
+                'code' => 400,
+                'error' => ["Không thể xóa vì dữ liệu còn tồn tại ở bảng khác!"]
+            ]);
+        }
     }
 }

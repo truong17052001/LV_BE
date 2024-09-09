@@ -60,11 +60,11 @@ class User extends Authenticatable
         return $this->hasManyThrough(
             Tour::class,
             Booking::class,
-            'makh', 
+            'makh',
             'id',
             'id',
             'mand'
         )->join('date_go', 'date_go.id', '=', 'booking.mand')
-          ->select('tour.*');
+            ->select('tour.*');
     }
 }

@@ -43,12 +43,22 @@ class DiscountController extends Controller
 
     public function applyDiscount($ma)
     {
-        $discount = $this->discountRepository->findByColumns(['magiamgia' => $ma]);
+        $date = date('ymdHis');
 
-        return $this->sendResponseApi([
-            'code' => 200,
-            'data' => $discount,
-        ]);
+        $discount = $this->discountRepository->findByColumns(['magiamgia' => $ma]);
+        if($discount){
+            $discount->update(['hansd' => $date]);
+            return $this->sendResponseApi([
+                'code' => 200,
+                'data' => $discount,
+            ]);
+        }else{
+            return $this->sendResponseApi([
+                'code' => 400,
+                'error' => "Không tồn tại mã giảm giá này!",
+            ]);
+        }
+
     }
 
     public function create(Request $request)

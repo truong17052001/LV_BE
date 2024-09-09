@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <h1>Đây là hóa đơn thanh toán của bạn:</h1>
+    <h1>Thông tin đặt chỗ của bạn</h1>
 
     <p>Mã booking của bạn: {{$details['sobooking']}}</p>
     <p>Tên của bạn: {{$details['ten']}}</p>

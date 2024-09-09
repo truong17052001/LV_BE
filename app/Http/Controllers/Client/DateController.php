@@ -103,32 +103,43 @@ class DateController extends Controller
     }
     public function delete($id)
     {
-        $this->dateRepository->delete(
-            $id,
-        );
-
-        return $this->sendResponseApi([
-            'code' => 200,
-        ]);
+        $id_temp = $this->dateRepository->find($id)->bookings;
+        if (count($id_temp) <= 0) {
+            $this->dateRepository->delete(
+                $id,
+            );
+            return $this->sendResponseApi([
+                'code' => 200,
+            ]);
+        } else {
+            return $this->sendResponseApi([
+                'code' => 400,
+                'error' => ["Không thể xóa vì dữ liệu còn tồn tại ở bảng khác!"]
+            ]);
+        }
     }
 
     public function export($id, Request $request)
     {
         $dateGo = $this->dateRepository->find($id);
-        // Fetch all bookings for this date
         $bookings = $dateGo->bookings;
 
         $customers = $bookings->flatMap(function ($booking) {
             return $booking->detail;
         });
-        
-        $filename = 'customers.xlsx';
-        $headers = ['Mã', 'Họ tên', 'Giới tính', 'Ngày sinh', 'Người lớn'];
-        
+
+        $filename = 'danhsach.xlsx';
+        $headers = ['Mã', 'Họ tên', 'Giới tính', 'Ngày sinh', 'Độ tuổi'];
+
         $excelData = $customers->map(function ($customer) {
-            return [$customer->id, $customer->ten, $customer->gioitinh, $customer->ngaysinh,$customer->loai == 1 ? 'x' : $customer->loai
-        ];
-        })->toArray(); 
+            return [
+                $customer->id,
+                $customer->ten,
+                $customer->gioitinh,
+                $customer->ngaysinh,
+                $customer->loai == 1 ? 'Người lớn' : "Trẻ em"
+            ];
+        })->toArray();
 
         return Excel::download(new class ($headers, $excelData) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
             protected $headers;

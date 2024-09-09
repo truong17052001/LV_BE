@@ -25,9 +25,9 @@ return new class extends Migration
             $table->unsignedBigInteger('makh');
             $table->unsignedBigInteger('magg')->nullable();
             $table->timestamps();
-            $table->foreign('mand')->references('id')->on('date_go')->onDelete('restrict');
-            $table->foreign('makh')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('magg')->references('id')->on('discount')->onDelete('restrict');
+            $table->foreign('mand')->references('id')->on('date_go')->constrained()->onDelete('restrict');
+            $table->foreign('makh')->references('id')->on('users')->constrained()->onDelete('restrict');
+            $table->foreign('magg')->references('id')->on('discount')->constrained()->onDelete('restrict');
         });
     }
 

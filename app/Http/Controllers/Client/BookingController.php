@@ -62,8 +62,6 @@ class BookingController extends Controller
             'mand' => 'required|integer',
             'makh' => 'required|integer',
             'magg' => 'nullable|integer',
-            // 'detailBooking.adults' => 'required',
-            // 'detailBooking.childrens' => 'required', 
             'detailBooking.adults.*.ten' => 'required|string|max:255',
             'detailBooking.adults.*.gioitinh' => 'required|string',
             'detailBooking.adults.*.ngaysinh' => 'required|date',
@@ -90,8 +88,6 @@ class BookingController extends Controller
             'mand.required' => 'Mã ngày đi là bắt buộc.',
             'mand.integer' => 'Mã ngày đi phải là số nguyên.',
             'makh.required' => 'Mã khách hàng là bắt buộc.',
-            // 'detailBooking.adults.required' => 'Vui lòng nhập đầy đủ thông tin.',
-            // 'detailBooking.childrens.required' => 'Vui lòng nhập đầy đủ thông tin.',
             'detailBooking.adults.*.ten.required' => 'Tên của người lớn là bắt buộc.',
             'detailBooking.adults.*.ten.string' => 'Tên của người lớn phải là chuỗi.',
             'detailBooking.adults.*.ten.max' => 'Tên của người lớn không được vượt quá 255 ký tự.',
@@ -114,7 +110,7 @@ class BookingController extends Controller
                 'error' => $validator->errors()->all()
             ]);
         }
-        
+
         $date = $this->dateRepository->getDetail(
             $request->mand
         );
@@ -137,25 +133,12 @@ class BookingController extends Controller
             'magg' => $request->magg,
         ];
 
-        $booking = $this->bookingRepository->create(
-            $booking
-        );
 
-        $this->sendThankYouEmail($booking);
-
-        $date = $this->dateRepository->find(
-            $request->mand,
-        );
-
-        $date['chongoi'] = $date['chongoi'] - $request->nguoilon - $request->treem;
-        $input = ['chongoi' => $date->chongoi];
-
-        $this->dateRepository->update(
-            $request->mand,
-            $input
-        );
         $detailList = $request->detailBooking;
         if ($detailList != null) {
+            $booking = $this->bookingRepository->create(
+                $booking
+            );
             foreach ($detailList['adults'] as $detail) {
                 $detailBooking = [
                     'ten' => $detail['ten'],
@@ -181,12 +164,27 @@ class BookingController extends Controller
                     $detailBookings
                 );
             }
-        }else{
+        } else {
             return $this->sendResponseApi([
                 'code' => '400',
                 'error' => ["Vui lòng nhập đầy đủ thông tin"]
             ]);
         }
+
+
+        $date = $this->dateRepository->find(
+            $request->mand,
+        );
+
+        $date['chongoi'] = $date['chongoi'] - $request->nguoilon - $request->treem;
+        $input = ['chongoi' => $date->chongoi];
+
+        $this->dateRepository->update(
+            $request->mand,
+            $input
+        );
+
+        $this->sendThankYouEmail($booking);
 
         return $this->sendResponseApi([
             'code' => 200,
@@ -282,13 +280,21 @@ class BookingController extends Controller
     }
     public function delete($id)
     {
-        $this->bookingRepository->delete(
-            $id,
-        );
-
-        return $this->sendResponseApi([
-            'code' => 200,
-        ]);
+        $id_temp = $this->bookingRepository->find($id)->detail;
+        $id_temp1 = $this->bookingRepository->find($id)->detailPayment;
+        if (count($id_temp) <= 0 && count($id_temp1) <= 0) {
+            $this->bookingRepository->delete(
+                $id,
+            );
+            return $this->sendResponseApi([
+                'code' => 200,
+            ]);
+        } else {
+            return $this->sendResponseApi([
+                'code' => 400,
+                'error' => ["Không thể xóa vì dữ liệu còn tồn tại ở bảng khác!"]
+            ]);
+        }
     }
 
     public function downloadPDF($id, Request $request)
@@ -330,9 +336,13 @@ class BookingController extends Controller
             'tongtien' => $request->tongtien,
             'ngay' => $request->ngay
         ];
+        
         Mail::to($request->email)->send(new ThankYouInvoiceMail($details));
 
-        return response()->json(['message' => 'Email sent successfully']);
+        return $this->sendResponseApi([
+            'code' => 200,
+            'message' => "Gửi email thành công"
+        ]);
     }
 
 }

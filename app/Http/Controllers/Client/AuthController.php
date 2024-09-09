@@ -33,7 +33,7 @@ class AuthController extends Controller
                 'email.email' => 'Email không hợp lệ.',
                 'email.exists' => 'Email không tồn tại.',
                 'matkhau.required' => 'Mật khẩu là bắt buộc',
-                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',                
+                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',
             ]);
 
             if ($validator->fails()) {
@@ -124,12 +124,12 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 "email" => "required|email|unique:users",
                 "matkhau" => "required|min:7"
-            ],[
+            ], [
                 'email.required' => 'Email là bắt buộc.',
                 'email.email' => 'Email không hợp lệ.',
                 'email.unique' => 'Email đã tồn tại.',
                 'matkhau.required' => 'Mật khẩu là bắt buộc',
-                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',                
+                'matkhau.min' => 'Mật khẩu phải có ít nhất 7 kí tự',
             ]);
 
             if ($validator->fails()) {
@@ -236,25 +236,34 @@ class AuthController extends Controller
             'diachi' => $request->diachi,
             'ngaysinh' => $request->ngaysinh,
             'anh' => $request->anh,
+            'quyen' => $request->quyen
         ];
 
-        $this->authRepository->update(
+        $user = $this->authRepository->update(
             $id,
             $input
         );
 
         return $this->sendResponseApi([
             'code' => 200,
+            'data' => $user
         ]);
     }
     public function delete($id)
     {
-        $this->authRepository->delete(
-            $id,
-        );
-
-        return $this->sendResponseApi([
-            'code' => 200,
-        ]);
+        $id_temp = $this->authRepository->find($id)->bookings;
+        if (count($id_temp) <= 0) {
+            $this->authRepository->delete(
+                $id,
+            );
+            return $this->sendResponseApi([
+                'code' => 200,
+            ]);
+        } else {
+            return $this->sendResponseApi([
+                'code' => 400,
+                'error' => ["Không thể xóa vì dữ liệu còn tồn tại ở bảng khác!"]
+            ]);
+        }
     }
 }
